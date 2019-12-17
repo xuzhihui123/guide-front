@@ -1,0 +1,34 @@
+/*
+ * @Author: Lancer
+ * @Date:2019/12/11
+ * @Last Modified by:   Lancer
+ * @Last Modified time: 2019/12/11
+ */
+
+body,ol,ul,h1,h2,h3,h4,h5,h6,p,th,td,dl,dd,form,fieldset,legend,input,textarea,select{margin:0;padding:0}
+body{font:12px"微软雅黑","Arial Narrow",HELVETICA;background:#fff;-webkit-text-size-adjust:100%;}
+a{color:#2d374b;text-decoration:none}
+a:hover{color:#009de2;text-decoration:none}
+em{font-style:normal}
+li{list-style:none}
+img{border:0;vertical-align:middle}
+table{border-collapse:collapse;border-spacing:0}
+p{word-wrap:break-word}
+*{
+    box-sizing: border-box;
+}
+.clearfix:after {  /*正常浏览器 清除浮动*/
+    content:"";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+.clearfix {
+    *zoom: 1;  /*zoom 1 就是ie6 清除浮动方式  *  ie7一下的版本所识别*/
+}
+
+html{
+    height: 100%;
+}
+
