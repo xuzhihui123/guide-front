@@ -5,11 +5,15 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    tabBarShow:true
   },
   mutations: {
+    changeTabBarShow(state,flag){
+        state.tabBarShow = flag
+    },
   },
   actions: {
   },
-  modules: {
+  getters: {
   }
 })

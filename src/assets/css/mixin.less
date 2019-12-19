@@ -1,0 +1,20 @@
+/*
+ * @Author: Lancer
+ * @Date:
+ * @Last Modified by:   Lancer
+ * @Last Modified time: 
+ */
+
+ @import "var";
+ //混入模块
+ 
+ 
+ //设置根节点字体大小
+ .calc(@index) when (@index <= @deviceLength){
+   @media screen and (min-width: extract(@deviceWidth,@index)){
+     html{
+       font-size: @baseFont/@psdWidth*extract(@deviceWidth,@index);
+     }
+   }
+   .calc(@index+1);
+ }
