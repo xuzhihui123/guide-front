@@ -22,6 +22,25 @@ Vue.use(Toast);
 import {ActionSheet} from 'vant';
 
 Vue.use(ActionSheet);
+import {Uploader} from 'vant';
+
+Vue.use(Uploader);
+
+import { Field } from 'vant';
+
+Vue.use(Field);
+import { Cell, CellGroup } from 'vant';
+
+Vue.use(Cell).use(CellGroup);
+
+import { Dialog } from 'vant';
+
+// 全局注册
+Vue.use(Dialog);
+
+import { Overlay } from 'vant';
+
+Vue.use(Overlay);
 
 
 Vue.directive('focus', {
@@ -31,6 +50,7 @@ Vue.directive('focus', {
     el.focus()
   }
 })
+
 
 new Vue({
   router,

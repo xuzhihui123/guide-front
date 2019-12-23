@@ -1,10 +1,28 @@
 <template>
-   <h3>我是首页</h3>
+  <div>
+   <h3>我是home</h3>
+  </div>
 </template>
 
 <script>
+
+
   export default {
-    name: "Home"
+    name: "Home",
+    data: function () {
+      return {
+
+      }
+    },
+    created() {
+    },
+    methods: {
+
+
+
+    },
+    components: {
+    },
   }
 </script>
 

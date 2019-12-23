@@ -16,7 +16,8 @@ module.exports = {
         'common':'components/common',
         'content':'components/content',
         'router':'@/router',
-        'store':'@/store'
+        'store':'@/store',
+        'commonjs':'@/commonjs'
       }
     }
   }

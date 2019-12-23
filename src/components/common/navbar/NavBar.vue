@@ -56,5 +56,9 @@
       font-weight: 700;
       justify-content: center;
     }
+    .right{
+      justify-content: flex-end;
+      font-size: 0.34rem;
+    }
   }
 </style>
