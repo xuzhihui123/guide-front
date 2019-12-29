@@ -20,3 +20,7 @@ p{word-wrap:break-word}
     --main-color:#FF699C
 }
 
+input{
+    -webkit-appearance: none;
+    outline: none;
+}

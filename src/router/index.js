@@ -37,6 +37,10 @@ const routes = [
     component:()=>import('views/profiletags/ProfileTags')
   },
   {
+    path:'/changepsd',
+    component:()=>import('views/changepassword/ChangePassword')
+  },
+  {
     path: '/',
     redirect: '/home'
   }
@@ -58,7 +62,7 @@ router.beforeEach((to, from, next) => {
       return next()
     }
   }
-  if(to.path === '/profiledetail' || to.path === '/profiletags'){
+  if(to.path === '/profiledetail' || to.path === '/profiletags' || to.path==='/changepsd'){
     if (data.user_name !== undefined) {
       return next()
     } else {

@@ -86,3 +86,17 @@ export function updateUserTextTags(data) {
     headers:{'Content-Type':'application/x-www-form-urlencoded'}
   })
 }
+
+//更改 用户 密码
+export function changeUserPassWord(data) { 
+  return request({
+    method:'post',
+    url:'/updateUserPassWord',
+    data,
+    transformRequest:[function (data) {
+      data = Qs.stringify(data)
+      return data
+    }],
+    headers:{'Content-Type':'application/x-www-form-urlencoded'}
+  })
+ }

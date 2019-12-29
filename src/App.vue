@@ -3,7 +3,7 @@
     <tab-bar :tab-bar-icon="tabBarIcons" :active-color="activeColors" v-show="tabBarShow"/>
     <transition enter-active-class="fadeIn animated" leave-active-class="fadeOut animated"
     :duration="{enter:200,leave:200}" mode="out-in">
-      <keep-alive exclude="Login,Register,Profile,ProfileDetail">
+      <keep-alive exclude="Login,Register,Profile,ProfileDetail,ChangePassword">
         <router-view/>
       </keep-alive>
     </transition>

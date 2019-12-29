@@ -20,7 +20,7 @@
           <van-icon name="arrow" size="0.28rem" color="#ccc"/>
         </div>
       </div>
-      <div class="inner-list_item">
+      <div class="inner-list_item" @click="goChangePsd">
         <div class="left">
           <i class="iconfont icon-lock"></i>
           <span>修改密码</span>
@@ -54,6 +54,11 @@
           duration: 1500
         })
         this.$parent.getUserInfo()
+      },
+
+      //更改密码路由
+      goChangePsd(){
+        this.$router.push('/changepsd')
       }
     },
     data() {
