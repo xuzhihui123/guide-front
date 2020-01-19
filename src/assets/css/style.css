@@ -81,6 +81,11 @@
     font-size: 100px;
   }
 }
+@media screen and (min-width: 1024px) {
+  html {
+    font-size: 136.53333333px;
+  }
+}
 a {
   text-decoration: none ! important;
 }

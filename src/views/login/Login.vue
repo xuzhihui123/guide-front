@@ -20,7 +20,7 @@
       <!--      密码-->
       <div class="password">
         <img :src="clickInputIcon.passWord.inactive" alt="">
-        <input type="text" placeholder="请输入密码" v-model="passWord" @focus="changeIconT" @blur="changeIconTu">
+        <input type="password" placeholder="请输入密码" v-model="passWord" @focus="changeIconT" @blur="changeIconTu">
       </div>
 
       <div class="submit-login" @click="goLogin">

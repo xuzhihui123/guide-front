@@ -170,6 +170,8 @@ export default {
       if (type === "blob") {
         this.$refs.cropper.getCropBlob(() => {});
       } else {
+        console.log('111');
+
         this.$refs.cropper.getCropData(data => {
           //转换file对象 上传服务器
           let TrueFile = baseTofile.dataURLtoFile(data, "avator");
@@ -423,7 +425,7 @@ export default {
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 9999;
+  z-index: 10001;
 }
 
 .vue-cropper {

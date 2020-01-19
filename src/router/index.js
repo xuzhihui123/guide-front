@@ -41,6 +41,14 @@ const routes = [
     component:()=>import('views/changepassword/ChangePassword')
   },
   {
+    path:'/profiledetailshow',
+    component:()=>import('views/profiledetailshow/ProfileDetailShow')
+  },
+  {
+    path:'/search',
+    component:()=>import('views/search/Search')
+  },
+  {
     path: '/',
     redirect: '/home'
   }

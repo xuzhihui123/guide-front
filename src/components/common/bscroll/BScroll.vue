@@ -41,8 +41,7 @@ export default {
       });
 
 
-      this.scroll.on('scroll',(position)=>{
-        console.log(position);
+      this.scroll.on('scroll',()=>{
       })
 
       //上拉加载

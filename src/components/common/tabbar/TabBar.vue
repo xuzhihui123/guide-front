@@ -1,6 +1,6 @@
 <template>
   <div>
-    <van-tabbar v-model="active" :active-color="activeColor" route>
+    <van-tabbar v-model="active" :active-color="activeColor" route :z-index="10000">
       <van-tabbar-item v-for="item in tabBarIcon" :key="item.active" :to="item.router">
         <span>{{item.name}}</span>
         <img
