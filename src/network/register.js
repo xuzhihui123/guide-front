@@ -22,3 +22,19 @@ export function registerForm(data) {
        }
    )
 }
+
+//注册导游
+export function registerGuideForm(data) {
+  return request(
+      {
+        method:'post',
+        url:'/insertGuide',
+        data,
+        transformRequest: [function (data) {
+          data = Qs.stringify(data);
+          return data;
+        }],
+        headers:{'Content-Type':'application/x-www-form-urlencoded'}
+      }
+  )
+}

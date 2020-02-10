@@ -48,7 +48,7 @@
   import  LoginLogo from 'content/loginlogo/LoginLogo'
 
   //引入network
-  import {loginForm} from "network/login";
+  import {loginForm,guideLogin} from "network/login";
 
   export default {
     name: "Login",
@@ -74,48 +74,70 @@
         this.hidenRegister=true
       },
       onSelectRegis(item){
-        if(item.flag === 1){
-          this.$router.push('/register')
+        //传入0是进入导游  传入1是进入用户
+          this.$router.push(`/register/${item.flag}`)
           this.hidenRegister = false
-        }else if(item.flag === 0){
-          this.$toast({
-            type:'success',
-            message:'我想成为导游'
-          })
-          this.hidenRegister = false
-        }
       },
 
 
+      //用户的请求方法
+      userLoginMethod(){
+        return loginForm({
+          userName:this.userName,
+          userPassWord:this.passWord})
+      },
+
+      //导游得请求方法
+      guideLoginMethod(){
+       return guideLogin({
+          guideName:this.userName,
+          guidePassWord:this.passWord})
+      },
+
       //登录点击
       goLogin(){
-        loginForm({
-          userName:this.userName,
-          userPassWord:this.passWord
-        }).then(r=>{
-          if(r.status.code === '500'){
-            this.$toast({
-              type: 'fail',
-              message: '账号或密码错误！',
-              icon: 'cross',
-              duration: 1500
-            })
-          }else if(r.status.code === '200'){
-            this.$toast({
-              type: 'success',
-              message: '登录成功!',
-              duration: 1500
-            })
+          Promise.all([this.userLoginMethod(),this.guideLoginMethod()]).then(r=>{
+            let [user,guide] = r
+            //如果都没有返回错误
+            if((!user.data) && (!guide.data)){
+                  return this.$toast({
+                    type: 'fail',
+                    message: '账号或密码错误！',
+                    icon: 'cross',
+                    duration: 1500
+                  })
+            }
+            // 如果用户登录成功
+            if(user.data && (!guide.data)){
+                  this.$toast({
+                    type: 'success',
+                    message: '登录成功!',
+                    duration: 1500
+                  })
+              // //登录成功保存 localstorage
+              let {user_avatar,user_name,user_nick,user_phone,user_id} = user.data
+              let userData = {user_avatar,user_name,user_nick,user_phone,user_id}
+              localStorage.setItem('userInfo',JSON.stringify(userData))
 
-            //登录成功保存 localstorage
-            let {user_avatar,user_name,user_nick,user_phone,user_id} = r.data
-            let userData = {user_avatar,user_name,user_nick,user_phone,user_id}
-            localStorage.setItem('userInfo',JSON.stringify(userData))
+              //页面跳转到 profile
+              this.$router.push('/profile')
+            }
 
-            //页面跳转到 profile
-            this.$router.push('/profile')
-          }
-        })
+            //如果导游登录成功
+            if(guide.data && (!user.data)){
+                  this.$toast({
+                    type: 'success',
+                    message: '登录成功!',
+                    duration: 1500
+                  })
+              //登录成功保存 localstorage
+              let userData ={user_avatar:guide.data.guide_avatar, user_name:guide.data.guide_name, user_nick:guide.data.guide_nick, user_phone:guide.data.guide_phone, user_id:guide.data.guide_id,is_guide:'y'}
+              localStorage.setItem('userInfo',JSON.stringify(userData))
+
+              //页面跳转到 profile
+              this.$router.push('/profile')
+            }
+          })
       }
     },
     data() {

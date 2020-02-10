@@ -47,6 +47,19 @@ export function getUserInfoById(data) {
       headers:{'Content-Type':'application/x-www-form-urlencoded'}
     })
 }
+//根据id获取导游信息
+export function getGuideInfoById(data) {
+  return request({
+    method:'post',
+    url:'/getGuideById',
+    data,
+    transformRequest:[function (data) {
+      data = Qs.stringify(data)
+      return data
+    }],
+    headers:{'Content-Type':'application/x-www-form-urlencoded'}
+  })
+}
 
 
 //获取user的标签库
@@ -100,3 +113,17 @@ export function changeUserPassWord(data) {
     headers:{'Content-Type':'application/x-www-form-urlencoded'}
   })
  }
+
+//更改导游头像
+export function changeGuideAvator(data) {
+  return request({
+    method:'post',
+    url:'/updateGuideAvatar',
+    data,
+    transformRequest:[function (data) {
+      data = Qs.stringify(data)
+      return data
+    }],
+    headers:{'Content-Type':'application/x-www-form-urlencoded'}
+  })
+}

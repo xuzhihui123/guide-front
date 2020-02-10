@@ -21,3 +21,16 @@ export function loginForm(data) {
     headers:{'Content-Type':'application/x-www-form-urlencoded'}
   })
 }
+
+export function guideLogin(data) {
+  return request({
+    method:'post',
+    url:'/guideLogin',
+    data,
+    transformRequest:[function (data) {
+      data = Qs.stringify(data)
+      return data
+    }],
+    headers:{'Content-Type':'application/x-www-form-urlencoded'}
+  })
+}
