@@ -81,7 +81,7 @@ img {
   height: 2.8rem;
 }
 .swiper-pagination-fraction, .swiper-pagination-custom, .swiper-container-horizontal > .swiper-pagination-bullets{
-  bottom: -3px;
+  bottom: 5px;
 }
 /deep/.swiper-pagination-bullet{
   width: 0.2rem;

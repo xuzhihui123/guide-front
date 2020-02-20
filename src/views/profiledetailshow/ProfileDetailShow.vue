@@ -58,7 +58,7 @@ import { mapMutations } from "vuex";
 import NavBar from "common/navbar/NavBar";
 
 //导入network
-import { getUserInfoById } from "network/profile";
+import { getUserInfoById,getGuideInfoById } from "network/profile";
 
 export default {
   name: "ProfileDetailShow",
@@ -86,27 +86,51 @@ export default {
     },
     //获取个人用户信息
     getUserByIdDetail() {
-      let userId = JSON.parse(localStorage.getItem("userInfo")).user_id;
-      getUserInfoById({
-        userId
-      }).then(r => {
-        this.profileDetailData[0].userNick = r.data.user_nick || "";
-        this.profileDetailData[0].userSex = r.data.user_sex || 0;
-        this.profileDetailData[0].userAvatar =
-          r.data.user_avatar || this.defaultAvatar;
+      let data = JSON.parse(localStorage.getItem("userInfo"));
+      let userId = data.user_id
+      if(data.is_guide){
+        getGuideInfoById({
+          guideId:userId
+        }).then(r=>{
+          this.profileDetailData[0].userNick = r.data.guide_nick || "";
+          this.profileDetailData[0].userSex = r.data.guide_sex || 0;
+          this.profileDetailData[0].userAvatar =
+              r.data.guide_avatar || this.defaultAvatar;
 
-        if (r.profile !== null) {
-          this.profileDetailData[1].profileText = r.profile.text;
-          if (r.profile.tags[0] === "") {
-            this.profileDetailData[1].profileTags = [];
+          if (r.profile !== null) {
+            this.profileDetailData[1].profileText = r.profile.text;
+            if (r.profile.tags[0] === "") {
+              this.profileDetailData[1].profileTags = [];
+            } else {
+              this.profileDetailData[1].profileTags = r.profile.tags;
+            }
           } else {
-            this.profileDetailData[1].profileTags = r.profile.tags;
+            this.profileDetailData[1].profileText = "";
+            this.profileDetailData[1].profileTags = [];
           }
-        } else {
-          this.profileDetailData[1].profileText = "";
-          this.profileDetailData[1].profileTags = [];
-        }
-      });
+        })
+      }else{
+        getUserInfoById({
+          userId
+        }).then(r => {
+          this.profileDetailData[0].userNick = r.data.user_nick || "";
+          this.profileDetailData[0].userSex = r.data.user_sex || 0;
+          this.profileDetailData[0].userAvatar =
+              r.data.user_avatar || this.defaultAvatar;
+
+          if (r.profile !== null) {
+            this.profileDetailData[1].profileText = r.profile.text;
+            if (r.profile.tags[0] === "") {
+              this.profileDetailData[1].profileTags = [];
+            } else {
+              this.profileDetailData[1].profileTags = r.profile.tags;
+            }
+          } else {
+            this.profileDetailData[1].profileText = "";
+            this.profileDetailData[1].profileTags = [];
+          }
+        });
+      }
     },
 
     //展示大头像

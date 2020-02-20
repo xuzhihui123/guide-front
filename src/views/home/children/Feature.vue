@@ -1,6 +1,6 @@
 <template>
         <div id="feature">
-              <div class="feature-inner_listItem" v-for="(item,i) in featureImgList" :key="i">
+              <div class="feature-inner_listItem" v-for="(item,i) in featureImgList" :key="i" @click="goRouter(item.routerPath)">
                 <span :style="{'color':item.titleStyle}" class="title">{{item.title}}</span>
                 <span class="title-flag" :style="item.titleFlagStyle">{{item.titleFlag}}</span>
                 <img :src="item.image" alt="">
@@ -23,6 +23,11 @@
           return []
         }
       }
+    },
+    methods:{
+      goRouter(path){
+         this.$router.push(path)
+      }
     }
   }
 </script>
@@ -30,7 +35,6 @@
 <style scoped lang="less">
 #feature{
   position: relative;
-  top: -1.4rem;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;

@@ -3,7 +3,7 @@
     <tab-bar :tab-bar-icon="tabBarIcons" :active-color="activeColors" v-show="tabBarShow"/>
     <transition enter-active-class="fadeIn animated" leave-active-class="fadeOut animated"
     :duration="{enter:200,leave:200}" mode="out-in">
-      <keep-alive exclude="Login,Register,Profile,ProfileDetail,ChangePassword,ProfileDetailShow,Search">
+      <keep-alive exclude="Login,Register,Profile,ProfileDetail,ChangePassword,ProfileDetailShow,Search,FindDetail,PostRequestion">
         <router-view/>
       </keep-alive>
     </transition>
@@ -53,7 +53,7 @@
     },
     computed:{
       ...mapState(['tabBarShow'])
-    }
+    },
   };
 </script>
 <style lang="less">

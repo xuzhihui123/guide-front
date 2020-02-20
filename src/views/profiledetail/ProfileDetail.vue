@@ -95,7 +95,7 @@
 </template>
 
 <script>
-  import {mapMutations} from "vuex";
+  import {mapMutations,mapState} from "vuex";
 
   //导入组件
 
@@ -103,7 +103,9 @@
   import {
     getUserInfoById,
     updateUserProfile,
-    updateUserTextTags
+    updateUserTextTags,
+    getGuideInfoById,
+    updateGuideProfile
   } from "network/profile";
 
   export default {
@@ -159,48 +161,104 @@
 
       //获取个人用户的所有信息
       getSingleUser() {
-        //获取id
-        let userId = JSON.parse(localStorage.getItem("userInfo")).user_id;
-        getUserInfoById({
-          userId
-        }).then(r => {
-          let {
-            user_nick,
-            user_phone,
-            user_id,
-            user_avatar,
-            user_trueName,
-            user_sex,
-            user_card
-          } = r.data;
-          this.submitFormData.userNick = user_nick;
-          this.submitFormData.userPhone = user_phone;
-          this.submitFormData.userTrueName = user_trueName;
-          this.submitFormData.userCard = user_card === "0" ? "" : user_card;
-          this.submitFormData.userSex = user_sex;
+        // 判断是导游还是游客
+        let local = JSON.parse(localStorage.getItem("userInfo"))
 
-          this.userIdAndUserAv.userAvatar = user_avatar;
-          this.userIdAndUserAv.userId = user_id;
-          //获取个人标签  和  个人说明
-          if (!r.profile) {
-            this.profileTags = "";
-            this.profileText = "";
-          }
-          if (r.profile) {
-            if (r.profile.text === null || r.profile.tags === null) {
-              this.profileText = "";
-              this.profileTags = "";
-            } else {
-              this.profileText = r.profile.text;
-              this.profileTags = r.profile.tags.join(",");
+        let isSava = local.is_save
+
+        //是导游的话
+        if (local.is_guide) {
+          let guideId = local.user_id
+          getGuideInfoById({guideId}).then(r => {
+            let {
+              guide_nick,
+              guide_phone,
+              guide_id,
+              guide_avatar,
+              guide_trueName,
+              guide_sex,
+              guide_card,
+              guide_password
+            } = r.data;
+            this.submitFormData.userNick = guide_nick;
+            this.submitFormData.userPhone = guide_phone;
+            this.submitFormData.userTrueName = guide_trueName;
+            this.submitFormData.userCard = guide_card === "0" ? "" : guide_card;
+            this.submitFormData.userSex = guide_sex;
+
+            this.userIdAndUserAv.userAvatar = guide_avatar;
+            this.userIdAndUserAv.userId = guide_id;
+            this.userIdAndUserAv.userPassWord = guide_password;
+            //获取个人标签  和  个人说明
+            if(isSava===0){
+              if (!r.profile) {
+                this.profileTags = "";
+                this.profileText = "";
+              }
+              if (r.profile) {
+                this.profileText = r.profile.text === null ? "" : r.profile.text
+                this.profileTags = r.profile.tags === null ? "" : r.profile.tags.join(",")
+              }
+            }else if(isSava===1){
+              this.profileTags =this.profileTagsStr
+              if (!r.profile) {
+                this.profileText = "";
+              }
+              if (r.profile) {
+                this.profileText = r.profile.text === null ? "" : r.profile.text
+              }
             }
-          }
-        });
+          })
+        } else {
+          //获取id
+          let userId = local.user_id;
+          getUserInfoById({
+            userId
+          }).then(r => {
+            let {
+              user_nick,
+              user_phone,
+              user_id,
+              user_avatar,
+              user_trueName,
+              user_sex,
+              user_card,
+            } = r.data;
+            this.submitFormData.userNick = user_nick;
+            this.submitFormData.userPhone = user_phone;
+            this.submitFormData.userTrueName = user_trueName;
+            this.submitFormData.userCard = user_card === "0" ? "" : user_card;
+            this.submitFormData.userSex = user_sex;
+
+            this.userIdAndUserAv.userAvatar = user_avatar;
+            this.userIdAndUserAv.userId = user_id;
+            //获取个人标签  和  个人说明
+            if(isSava===0){
+              if (!r.profile) {
+                this.profileTags = "";
+                this.profileText = "";
+              }
+              if (r.profile) {
+                this.profileText = r.profile.text === null ? "" : r.profile.text
+                this.profileTags = r.profile.tags === null ? "" : r.profile.tags.join(",")
+              }
+            }else if(isSava===1){
+              this.profileTags =this.profileTagsStr
+              if (!r.profile) {
+                this.profileText = "";
+              }
+              if (r.profile) {
+                this.profileText = r.profile.text === null ? "" : r.profile.text
+              }
+            }
+          });
+        }
+
+
       },
 
       //保存提交
       submitUserProfile() {
-        //先判断除个人说明和标签
         if (
             this.submitFormData.userNick === "" ||
             this.submitFormData.userTrueName === "" ||
@@ -214,62 +272,122 @@
             duration: 1500
           });
         }
-        let postObject = {};
-        for (let key in this.submitFormData) {
-          postObject[key] = this.submitFormData[key];
-        }
-        for (let key in this.userIdAndUserAv) {
-          postObject[key] = this.userIdAndUserAv[key];
-        }
+        //如果是导游
+        if (JSON.parse(localStorage.getItem('userInfo')).is_guide) {
+          let postObject = {};
+          postObject.guideNick = this.submitFormData.userNick
+          postObject.guidePassWord = this.userIdAndUserAv.userPassWord;
+          postObject.guideAvatar = this.userIdAndUserAv.userAvatar;
+          postObject.guideCard = this.submitFormData.userCard;
+          postObject.guidePhone = this.submitFormData.userPhone;
+          postObject.guideId = this.userIdAndUserAv.userId;
+          postObject.guideTrueName = this.submitFormData.userTrueName;
+          postObject.guideSex = this.submitFormData.userSex;
+          updateGuideProfile(postObject).then(r => {
+            if (r.code === "503") {
+              return this.$toast({
+                type: "fail",
+                message: "请检查信息是否正确！",
+                icon: "cross",
+                duration: 1500
+              });
+            } else if (r.code === "506") {
+              return this.$toast({
+                type: "fail",
+                message: "请检查信息是否正确！",
+                icon: "cross",
+                duration: 1500
+              });
+            } else {
+              updateUserTextTags({
+                userTags: this.profileTags,
+                type: 2,  //导游
+                userText: this.profileText,
+                userId: this.userIdAndUserAv.userId
+              }).then(r => {
+                if (r.code === "200") {
+                  this.$toast({
+                    type: "success",
+                    message: "保存成功！",
+                    duration: 1500
+                  });
+                  let d = JSON.parse(localStorage.getItem("userInfo"));
+                  d.user_nick = this.submitFormData.userNick;
+                  d.user_phone = this.submitFormData.userPhone;
 
-        updateUserProfile(postObject).then(r => {
-          if (r.code === "503") {
-            return this.$toast({
-              type: "fail",
-              message: "请检查信息是否正确！",
-              icon: "cross",
-              duration: 1500
-            });
-          } else if (r.code === "506") {
-            return this.$toast({
-              type: "fail",
-              message: "请检查信息是否正确！",
-              icon: "cross",
-              duration: 1500
-            });
-          } else {
-            updateUserTextTags({
-              userTags: this.profileTags,
-              type: 1,
-              userText: this.profileText,
-              userId: this.userIdAndUserAv.userId
-            }).then(r => {
-              if (r.code === "200") {
-                this.$toast({
-                  type: "success",
-                  message: "保存成功！",
-                  duration: 1500
-                });
-                let d = JSON.parse(localStorage.getItem("userInfo"));
-                d.user_nick = this.submitFormData.userNick;
-                d.user_phone = this.submitFormData.userPhone;
 
-                d.profile_text = this.profileText;
+                  localStorage.setItem("userInfo", JSON.stringify(d));
 
-                localStorage.setItem("userInfo", JSON.stringify(d));
-
-                this.$router.push("/profile");
-              } else {
-                this.$toast({
-                  type: "fail",
-                  message: "服务器错误！",
-                  icon: "cross",
-                  duration: 1500
-                });
-              }
-            });
+                  this.$router.push("/profile");
+                } else {
+                  this.$toast({
+                    type: "fail",
+                    message: "服务器错误！",
+                    icon: "cross",
+                    duration: 1500
+                  });
+                }
+              });
+            }
+          })
+        } else {
+          let postObject = {};
+          for (let key in this.submitFormData) {
+            postObject[key] = this.submitFormData[key];
           }
-        });
+          for (let key in this.userIdAndUserAv) {
+            postObject[key] = this.userIdAndUserAv[key];
+          }
+
+          updateUserProfile(postObject).then(r => {
+            if (r.code === "503") {
+              return this.$toast({
+                type: "fail",
+                message: "请检查信息是否正确！",
+                icon: "cross",
+                duration: 1500
+              });
+            } else if (r.code === "506") {
+              return this.$toast({
+                type: "fail",
+                message: "请检查信息是否正确！",
+                icon: "cross",
+                duration: 1500
+              });
+            } else {
+              updateUserTextTags({
+                userTags: this.profileTags,
+                type: 1,
+                userText: this.profileText,
+                userId: this.userIdAndUserAv.userId
+              }).then(r => {
+                if (r.code === "200") {
+                  this.$toast({
+                    type: "success",
+                    message: "保存成功！",
+                    duration: 1500
+                  });
+                  let d = JSON.parse(localStorage.getItem("userInfo"));
+                  d.user_nick = this.submitFormData.userNick;
+                  d.user_phone = this.submitFormData.userPhone;
+
+
+                  localStorage.setItem("userInfo", JSON.stringify(d));
+
+                  this.$router.push("/profile");
+                } else {
+                  this.$toast({
+                    type: "fail",
+                    message: "服务器错误！",
+                    icon: "cross",
+                    duration: 1500
+                  });
+                }
+              });
+            }
+          });
+        }
+
       },
 
       //头像图片放大
@@ -284,6 +402,9 @@
     },
     destroyed() {
       this.changeTabBarShow(true);
+    },
+    computed:{
+      ...mapState(['profileTagsStr'])
     }
   };
 </script>

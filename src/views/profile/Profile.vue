@@ -44,7 +44,7 @@
         </div>
       </div>
     </div>
-    <profile-list class="profilelist" :iphone-code="singleUserInfo.user_phone || ''" />
+    <profile-list class="profilelist" :iphone-code="singleUserInfo.user_phone || ''" :is-guide="singleUserInfo"/>
 
     <div class="cropper-wrapper" v-show="cropperView">
       <vue-cropper
@@ -86,7 +86,7 @@ import {
   changeUserAvator,
   getUserInfoById,
   changeGuideAvator,
-  getGuideInfoById
+  getGuideInfoById,
 } from "network/profile";
 
 //导入工具commonjs

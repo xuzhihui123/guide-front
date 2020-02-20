@@ -70,12 +70,33 @@ export function getUserAllTags() {
   })
 }
 
+//获取导游得标签库
+export function getGuideAllTags() {
+  return request({
+    method:'get',
+    url:'/getGuideTags'
+  })
+}
+
 
 //更新用户个人资料不包括个人说明 和 tags标签
 export function updateUserProfile(data) {
   return request({
     method:'post',
     url:'/updateUser',
+    data,
+    transformRequest:[function (data) {
+      data = Qs.stringify(data)
+      return data
+    }],
+    headers:{'Content-Type':'application/x-www-form-urlencoded'}
+  })
+}
+//更新导游个人资料不包括个人说明 和 tags标签
+export function updateGuideProfile(data) {
+  return request({
+    method:'post',
+    url:'/updateGuide',
     data,
     transformRequest:[function (data) {
       data = Qs.stringify(data)

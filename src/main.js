@@ -3,7 +3,19 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
+Vue.prototype.$bus = new Vue()
+
 Vue.config.productionTip = false
+
+
+
+//引入百度地图组件
+import BaiduMap from 'vue-baidu-map'
+
+Vue.use(BaiduMap, {
+  ak: 'vgrSAB4UtprjZHvfPP9yxpLfR73IqysG'
+})
+
 
 
 import 'assets/css/common.css'
@@ -31,6 +43,15 @@ import { Field } from 'vant';
 Vue.use(Field);
 import { Cell, CellGroup } from 'vant';
 
+import { Popup } from 'vant';
+
+Vue.use(Popup);
+
+
+import { NoticeBar } from 'vant';
+
+Vue.use(NoticeBar);
+
 Vue.use(Cell).use(CellGroup);
 
 import { Dialog } from 'vant';
@@ -39,6 +60,7 @@ import { Dialog } from 'vant';
 Vue.use(Dialog);
 
 import { Overlay } from 'vant';
+import moment from "moment";
 
 Vue.use(Overlay);
 
@@ -49,6 +71,11 @@ Vue.directive('focus', {
 // 聚焦元素
     el.focus()
   }
+})
+
+
+Vue.filter('dateFormat',(str,data="YYYY-MM-DD")=>{
+  return moment(str).format(data)
 })
 
 

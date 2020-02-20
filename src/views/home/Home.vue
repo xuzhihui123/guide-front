@@ -12,10 +12,18 @@
       <div class="swiper-wapper">
         <swiper :view-list="bannerList"/>
       </div>
+
+      <van-notice-bar :text="noticeBarText" left-icon="volume-o" class="notice-bar" :scrollable="true"/>
+
+
+
       <!--    feature开始-->
       <feature :feature-img-list="featureImgList"/>
+
+
       <!--    优选向导开始-->
       <pre-guide class="preguide"/>
+
 
       <!--      当地必玩开始-->
       <local-play/>
@@ -50,17 +58,19 @@
             titleFlagStyle: {
               'background-color': '#ffe4df',
               'color': '#ff4a28'
-            }
+            },
+            routerPath:'/nowbuytickets'
           },
           {
             image: require('assets/home-feature_icon2.png'),
-            title: '预约导游',
+            title: '在线寻导',
             titleFlag: '总有一款适合你',
             titleStyle: '#07c7f6',
             titleFlagStyle: {
               'background-color': '#daf7fe',
               'color': '#07c7f6'
-            }
+            },
+            routerPath:'/nowfindGuide'
           },
           {
             image: require('assets/home-feature_icon3.png'),
@@ -70,7 +80,8 @@
             titleFlagStyle: {
               'background-color': '#ffefd9',
               'color': '#ff9400'
-            }
+            },
+            routerPath:'/nowbuytickets'
           },
           {
             image: require('assets/home-feature_icon4.png'),
@@ -80,7 +91,8 @@
             titleFlagStyle: {
               'background-color': '#ffe4df',
               'color': '#ff4a28'
-            }
+            },
+            routerPath:'/nowbuytickets'
           },
           {
             image: require('assets/home-feature_icon5.png'),
@@ -90,7 +102,8 @@
             titleFlagStyle: {
               'background-color': '#daf7fe',
               'color': '#07c7f6'
-            }
+            },
+            routerPath:'/nowbuytickets'
           },
           {
             image: require('assets/home-feature_icon6.png'),
@@ -100,9 +113,11 @@
             titleFlagStyle: {
               'background-color': '#ffeee8',
               'color': '#ff9400'
-            }
+            },
+            routerPath:'/nowbuytickets'
           }
-        ]
+        ],
+        noticeBarText: '欢迎进入寻导网，本网站致力于在线寻找导游，爱旅游的小伙伴赶紧戳下方在线寻导，为你的旅游计划精致一场吧~'
       }
     },
     created() {
@@ -134,6 +149,24 @@
     height: 100vh;
   }
 
+  .notice-bar {
+    margin-top: -1.4rem;
+    margin-bottom: 0.2rem;
+    font-size: 0.28rem;
+    padding: 0 0.3rem;
+    height: 0.8rem;
+    line-height: 0.6rem;
+  }
+
+  /deep/ .van-notice-bar__wrap {
+    height: 0.6rem;
+  }
+
+  /deep/ .van-notice-bar__left-icon, .van-notice-bar__right-icon {
+    font-size: 0.28rem;
+    min-width: 0.4rem;
+  }
+
   .bscroll {
     position: absolute;
     top: 0;
@@ -146,7 +179,7 @@
     width: 100%;
     height: 3.2rem;
     position: relative;
-    background-image: linear-gradient( 135deg, #FFD3A5 10%, #FD6585 100%);
+    background-image: linear-gradient(135deg, #FFD3A5 10%, #FD6585 100%);
     border-bottom-left-radius: 0.3rem;
     border-bottom-right-radius: 0.3rem;
   }
@@ -163,6 +196,5 @@
   }
 
   .preguide {
-    margin-top: -1.3rem;
   }
 </style>

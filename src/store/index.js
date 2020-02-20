@@ -5,12 +5,17 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    tabBarShow:true
+    tabBarShow:true,
+    profileTagsStr:''
   },
   mutations: {
     changeTabBarShow(state,flag){
         state.tabBarShow = flag
     },
+    //更改profiletags
+    changeProfileTags(state,str){
+      state.profileTagsStr = str
+    }
   },
   actions: {
   },

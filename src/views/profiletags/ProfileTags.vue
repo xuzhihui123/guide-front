@@ -1,14 +1,11 @@
 <template>
   <div id="profiletags">
     <nav-bar>
-      <div slot="left" class="left" @click="goBack">
+      <div slot="left" class="left" @click="savaUserTags">
         <img src="~assets/arrow-left.svg" alt="">
       </div>
       <div slot="center" class="center">
         标签
-      </div>
-      <div slot="right" class="right" @click="savaUserTags">
-        保存
       </div>
     </nav-bar>
 
@@ -48,7 +45,7 @@
   import NavBar from 'common/navbar/NavBar'
 
   //导入network
-  import {getUserAllTags, updateUserTextTags} from 'network/profile'
+  import {getUserAllTags,getGuideAllTags} from 'network/profile'
 
   export default {
     name: "ProfileTags",
@@ -60,17 +57,22 @@
       }
     },
     methods: {
-      ...mapMutations(['changeTabBarShow']),
+      ...mapMutations(['changeTabBarShow','changeProfileTags']),
 
-      goBack() {
-        this.$router.go(-1)
-      },
 
       //获取用户所有标签库
       getUserTags() {
-        getUserAllTags().then(r => {
-          this.userAllTags = r
-        })
+        let data = JSON.parse(localStorage.getItem('userInfo')).is_guide
+
+        if(data){
+          getGuideAllTags().then(r=>{
+            this.userAllTags = r
+          })
+        }else{
+          getUserAllTags().then(r => {
+            this.userAllTags = r
+          })
+        }
       },
 
       //选中标签点击
@@ -119,28 +121,11 @@
           })
         }
         let tagsStr = this.nowSelectedTags.join(',')
-        // 获取用户id
-        let userId = JSON.parse(localStorage.getItem('userInfo')).user_id
-        let userText = JSON.parse(localStorage.getItem('userInfo')).profile_text
-        updateUserTextTags({type: 1, userText, userTags: tagsStr, userId})
-            .then(r => {
-              if (r.code === '200') {
-                this.$toast({
-                  type: 'success',
-                  message: '保存成功！',
-                  duration: 1500
-                })
 
-                this.$router.push('/profiledetail')
-              } else {
-                this.$toast({
-                  type: 'fail',
-                  message: '服务器错误，保存失败!',
-                  icon: 'cross',
-                  duration: 1500
-                })
-              }
-            })
+        //保存到vuex
+        this.changeProfileTags(tagsStr)
+
+        this.$router.push('/profiledetail')
       },
     },
     components: {
