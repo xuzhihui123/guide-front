@@ -25,10 +25,10 @@
 </template>
 
 <script>
-  import {mapMutations} from 'vuex'
+  import {mapMutations,mapState} from 'vuex'
 
   //导入network
-  import {guideReceiveOrder} from 'network/order'
+  import {guideReceiveOrder, guideStopReceiveOrder} from 'network/order'
 
   export default {
     name: "GuideReceipt",
@@ -43,26 +43,36 @@
           seconds: 0
         },
         timeObjInte: null,
-        guideId:null,
-        socket:null
+        guideId: null,
       }
     },
     methods: {
-      ...mapMutations(['changeTabBarShow']),
+      ...mapMutations(['changeTabBarShow','changeUserIsPay']),
 
       //获取导游id
-      getGuideId(){
+      getGuideId() {
         let d = JSON.parse(localStorage.getItem('userInfo') || '{}').user_id
-        if(d){
+        if (d) {
           this.guideId = d
         }
       },
 
 
-
       //开始接单submit
       goReceipt() {
+        if (this.receiveFlag) {
+          return this.$toast({
+            type: "fail",
+            message: "您有一条订单待处理哦！",
+            icon: "cross",
+            duration: 1500
+          });
+        }
+
+
         this.isGoReceipt = !this.isGoReceipt
+
+        //判断是否已经被用户结果单了  如果被接单了 则不能在开启接单
 
 
         //开启接单操作
@@ -85,19 +95,19 @@
           }, 1000)
 
           //发id给后台
-          guideReceiveOrder(this.guideId).then(r=>{
-            console.log(r);
-
-            if(r.code==='200'){
-              //开启websocket
-              this.openWebscoketGuide(this.guideId)
-            }else{
+          guideReceiveOrder(this.guideId).then(r => {
+            if (!r.code === '200') {
               return this.$toast({
                 type: "fail",
                 message: "服务器错误！",
                 icon: "cross",
                 duration: 1500
               });
+            } else {
+              //开启websocket
+              this.$toast({
+                message: '您已开始接单!'
+              })
             }
           })
 
@@ -109,35 +119,25 @@
           this.timeObj.hours = 0
           this.activesTwo = 'activesTwo'
           this.submitText = '开启接单'
+          guideStopReceiveOrder(this.guideId).then(r => {
+            if (!r.code === '200') {
+              return this.$toast({
+                type: "fail",
+                message: "服务器错误！",
+                icon: "cross",
+                duration: 1500
+              });
+            } else {
+              this.$toast({
+                message: '您已停止接单!'
+              })
+            }
+          })
+
         }
 
       },
-      // 开启导游websocket
-      openWebscoketGuide(id){
-        if (typeof (WebSocket) == "undefined") {
-          console.log("您的浏览器不支持WebSocket");
-        } else {
-          this.socket = new WebSocket(`ws://49.235.26.253:8082/websocket/${id}`);
-          //打开事件
-          this.socket.onopen = function () {
-            console.log("Socket 已打开");
-          };
-          //获得消息事件
-          this.socket.onmessage = function (msg) {
-            console.log(msg.data);
-            //发现消息进入    开始处理前端触发逻辑
-          };
-          //关闭事件
-          this.socket.onclose = function () {
-            console.log("Socket已关闭");
-          };
-          //发生了错误事件
-          this.socket.onerror = function () {
-            alert("Socket发生了错误");
-            //此时可以尝试刷新页面
-          }
-        }
-      },
+
 
 
       //返回
@@ -147,14 +147,38 @@
     },
     activated() {
       this.changeTabBarShow(false)
+      this.getGuideId();
     },
     deactivated() {
       this.changeTabBarShow(true)
+      this.getGuideId();
     },
     created() {
       this.getGuideId();
+      this.$bus.$on('goGuideReceipt',()=>{
+        this.isGoReceipt = false
+        clearInterval(this.timeObjInte)
+        this.timeObj.seconds = 0
+        this.timeObj.minutes = 0
+        this.timeObj.hours = 0
+        this.activesTwo = 'activesTwo'
+        this.submitText = '开启接单'
+        this.$toast({
+          message: '您已停止接单!'
+        })
+      })
+
+      //获取是否被用户选中的事件总线
+      this.$bus.$on('getToastForSuccess',()=>{
+        this.$toast({
+          message: '有用户选择您拉！',
+          type: 'success'
+        })
+      })
+
     },
     computed: {
+      ...mapState(['receiveFlag']),
       handleSeconds() {
         if (this.timeObj.seconds < 10) {
           return '0' + this.timeObj.seconds
@@ -169,7 +193,7 @@
           return this.timeObj.minutes
         }
       },
-      handleHours(){
+      handleHours() {
         if (this.timeObj.hours < 10) {
           return '0' + this.timeObj.hours
         } else {

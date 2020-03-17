@@ -11,7 +11,7 @@
           <!--            位置-->
           <div class="location">
             <img src="~assets/location-icon.svg" alt="">
-            <input type="text" placeholder="您的位置" v-model="address" @click="getAddressInfo">
+            <input type="text" placeholder="您的位置" v-model="address" @click="getAddressInfo" readonly>
           </div>
           <!--          目的地-->
           <div class="mdd">
@@ -39,7 +39,7 @@
             <img src="~assets/true-icon.svg" alt="">
           </div>
         </div>
-        <div class="guide-item_right">
+        <div class="guide-item_right" @click="selectSingleGuide(item.guideModel.guide_id)">
           选择他
         </div>
       </div>
@@ -74,7 +74,7 @@
 
     <!--     没获取到导游列表显示-->
     <div class="cry-error" v-show="!isShowGuideList">
-      <img src="~assets/crying-icon.svg" alt="">
+      <img src="~assets/main-logo.png" alt="">
       <span>暂未获取到匹配的在线导游哦~</span>
     </div>
   </div>
@@ -84,7 +84,7 @@
   import {mapMutations} from 'vuex'
 
   //导入network
-  import {getAddress, userCreateOrders} from 'network/order'
+  import {getAddress, getOnlineGuide, selectGuideAndCreateOrder} from 'network/order'
 
   import BScroll from 'common/bscroll/BScroll'
 
@@ -94,6 +94,7 @@
       return {
         destinationText: '',
         postDestinationText: '',
+        postDetailText: '',
         address: '',
         isShowMap: false,
         isShowAddressDiv: false,
@@ -128,11 +129,19 @@
 
       //获取在线导游
       submitGetGuide() {
-        let d = JSON.parse(localStorage.getItem('userInfo'))
+        let d = JSON.parse(localStorage.getItem('userInfo') || '{}')
         if (d.is_guide) {
           return this.$toast({
             type: "fail",
             message: "您是导游哦！",
+            icon: "cross",
+            duration: 1500
+          });
+        }
+        if (this.address === '获取位置失败') {
+          return this.$toast({
+            type: "fail",
+            message: "请先获取位置信息！",
             icon: "cross",
             duration: 1500
           });
@@ -146,27 +155,42 @@
           });
           this.$router.push('/login')
         } else {
-          userCreateOrders({
-            user_id: this.userId,
-            orderDst: this.postDestinationText,
-            orderPrice: '面议'
-          }).then(r => {
-            console.log(r);
-            if (!r.status) {
-              return this.$toast({
-                type: "fail",
-                message: "服务器错误！",
-                icon: "cross",
-                duration: 1500
-              });
-            } else if (r.status.code === '200') {
-              //如果获取到了  不显示目的地列表
-              this.isShowAddressDiv = false
-              //显示导游列表
-              this.isShowGuideList = true
-              this.guideList = r.data
-            }
-          })
+          //如果没有输入目的地
+          if (!this.destinationText) {
+            return this.$toast({
+              type: "fail",
+              message: "请输入目的地！",
+              icon: "cross",
+              duration: 1500
+            });
+          } else {
+            getOnlineGuide({
+              orderDst: this.postDestinationText,
+            }).then(r => {
+              if (r.status.code === '200') {
+                //如果获取到了  不显示目的地列表
+                this.isShowAddressDiv = false
+                //显示导游列表
+                this.isShowGuideList = true
+                this.guideList = r.data
+              } else if (r.status.code === '500') {
+                this.guideList = []
+                this.isShowAddressDiv = false
+                return this.$toast({
+                  type: "fail",
+                  message: "该地区暂无人接单！",
+                  duration: 1500
+                });
+              } else {
+                this.isShowAddressDiv = false
+                return this.$toast({
+                  type: "fail",
+                  message: "服务器错误！",
+                  duration: 1500
+                });
+              }
+            })
+          }
         }
       },
 
@@ -181,14 +205,20 @@
         if (!this.destinationText) {
           this.isShowAddressDiv = false
         }
-        this.isShowAddressDiv = true
+
         this.DesaddrList = d
       },
 
       //选中选择的目的地
       changeInputDestin(item) {
         this.destinationText = item.title
-        this.postDestinationText = item.city.substr(0, item.city.length - 1)
+        if (item.city) {
+          this.postDestinationText = item.city
+          this.postDetailText = item.province + ',' + item.city + ',' + item.address + ',' + item.title
+        } else {
+          this.postDestinationText = item.address
+          this.postDetailText = item.address + ',' + item.title
+        }
       },
 
       // 获取用户id
@@ -197,6 +227,46 @@
         if (d) {
           this.userId = d
         }
+      },
+
+      //选择导游
+      selectSingleGuide(guide_id) {
+        this.$dialog.confirm({
+          title: '确认选择导游'
+        }).then(() => {
+          selectGuideAndCreateOrder({
+            guide_id,
+            user_id: this.userId,
+            orderDst: this.postDestinationText,
+            orderPrice: '面议',
+            detailedLocation: this.postDetailText
+          }).then(r => {
+            if (!r.status) {
+              return this.$toast({
+                type: "fail",
+                message: "您已有一个订单待操作！",
+                icon: "cross",
+                duration: 1500
+              });
+            }
+            if (r.status.code === '200') {
+              this.$toast({
+                message: '选择成功！'
+              })
+              this.$store.commit('changeOrderObj', r.data)
+              //保存信息到localstorage 持久储存
+              localStorage.setItem('orders',JSON.stringify(r.data))
+              this.$router.push('/orders')
+            }
+          })
+        }).catch(() => {
+          this.$toast({
+            type: 'info',
+            message: '已取消'
+          });
+        });
+
+
       },
 
 
@@ -226,16 +296,13 @@
           }
         }
       },
-
-
     },
-    activated() {
-      this.changeTabBarShow(false)
-    },
-    deactivated() {
+
+    destroyed() {
       this.changeTabBarShow(true)
     },
     created() {
+      this.changeTabBarShow(false)
       this.getAddressInfo()
       //获取用户id
       this.getUserId()
@@ -250,6 +317,8 @@
         if (!newValue) {
           this.isShowAddressDiv = false
           this.DesaddrList = []
+        } else {
+          this.isShowAddressDiv = true
         }
       },
       DesaddrList(newValue) {

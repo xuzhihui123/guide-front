@@ -59,7 +59,7 @@
   import LoginLogo from 'content/loginlogo/LoginLogo'
 
   //引入网络请求
-  import {registerForm,registerGuideForm} from 'network/register'
+  import {registerForm, registerGuideForm} from 'network/register'
 
   export default {
     name: "Register",
@@ -160,6 +160,7 @@
               let userData = {user_avatar, user_name, user_nick, user_phone, user_id}
               localStorage.setItem('userInfo', JSON.stringify(userData))
 
+
               //页面跳转到 profile
               this.$router.push('/profile')
             }
@@ -167,7 +168,7 @@
         }
         //如果是导游
         if (this.isGuide === '0') {
-          if((this.userName === "" && this.passWord === "" && this.iphone === "" && this.guideTrueName==='') || (this.userName === "" || this.passWord === "" || this.iphone === "" || this.guideTrueName==='')){
+          if ((this.userName === "" && this.passWord === "" && this.iphone === "" && this.guideTrueName === '') || (this.userName === "" || this.passWord === "" || this.iphone === "" || this.guideTrueName === '')) {
             return this.$toast({
               type: 'fail',
               message: '请检查信息是否完整!',
@@ -177,11 +178,11 @@
           }
           //否则注册
           registerGuideForm({
-            guideName:this.userName,
-            guidePhone:this.iphone,
-            guideTrueName:this.guideTrueName,
-            guidePassWord:this.passWord
-          }).then(r=>{
+            guideName: this.userName,
+            guidePhone: this.iphone,
+            guideTrueName: this.guideTrueName,
+            guidePassWord: this.passWord
+          }).then(r => {
             if (r.status.code === '501') {
               return this.$toast({
                 type: 'fail',
@@ -218,8 +219,20 @@
               })
             }
 
-            let userData = {user_avatar:r.data.guide_avatar, user_name:r.data.guide_name, user_nick:r.data.guide_nick, user_phone:r.data.guide_phone, user_id:r.data.guide_id,is_guide:'y'}
+            let userData = {
+              user_avatar: r.data.guide_avatar,
+              user_name: r.data.guide_name,
+              user_nick: r.data.guide_nick,
+              user_phone: r.data.guide_phone,
+              user_id: r.data.guide_id,
+              is_guide: 'y'
+            }
             localStorage.setItem('userInfo', JSON.stringify(userData))
+
+            localStorage.removeItem('receiveFlag')
+            this.$store.commit('changeReceiveFlag', false)
+
+            this.$store.commit('changeGuideId', r.data.guide_id)
 
             //页面跳转到 profile
             this.$router.push('/profile')

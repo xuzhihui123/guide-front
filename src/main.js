@@ -38,6 +38,10 @@ import {Uploader} from 'vant';
 
 Vue.use(Uploader);
 
+import { Notify } from 'vant';
+
+Vue.use(Notify);
+
 import { Field } from 'vant';
 
 Vue.use(Field);
@@ -46,6 +50,10 @@ import { Cell, CellGroup } from 'vant';
 import { Popup } from 'vant';
 
 Vue.use(Popup);
+
+import { NavBar } from 'vant';
+
+Vue.use(NavBar);
 
 
 import { NoticeBar } from 'vant';

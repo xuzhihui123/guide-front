@@ -41,6 +41,17 @@
         </div>
       </div>
 
+      <!--      我的订单-->
+      <div class="inner-list_item"  @click="goMyOrders">
+        <div class="left">
+          <img src="~assets/my-order-icon.svg" alt="">
+          <span>我的订单</span>
+        </div>
+        <div class="right">
+          <van-icon name="arrow" size="0.28rem" color="#ccc"/>
+        </div>
+      </div>
+
       <div class="inner-list_item" @click="signOutUser" v-show="singOutFlag">
         <div class="left">
           <i class="iconfont icon-tuichu"></i>
@@ -61,6 +72,9 @@
       signOutUser() {
         setTimeout(() => {
           localStorage.setItem("userInfo", "{}");
+          localStorage.removeItem('orders')
+          this.$store.commit('changeOrderObj',{})
+          this.$store.commit('changeUserIsPay',false)
           this.$toast({
             type: "success",
             message: "您已安全退出",
@@ -83,6 +97,11 @@
       //跳转导游接单页面
       guideReceipt(){
         this.$router.push(`/guideReceipt`)
+      },
+
+      //去我的订单界面
+      goMyOrders(){
+        this.$router.push(`/myorders`)
       }
     },
     data() {

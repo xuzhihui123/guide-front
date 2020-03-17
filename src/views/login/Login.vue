@@ -49,6 +49,7 @@
 
   //引入network
   import {loginForm,guideLogin} from "network/login";
+  import {getOngoingOrder} from 'network/order'
 
   export default {
     name: "Login",
@@ -119,8 +120,21 @@
               let userData = {user_avatar,user_name,user_nick,user_phone,user_id}
               localStorage.setItem('userInfo',JSON.stringify(userData))
 
+              getOngoingOrder({guide_id:0,user_id}).then(r=>{
+                //表示有进行中的订单
+                if(r.code==='200'){
+                  this.$store.commit('changeOrderObj',r.msg[0])
+                  //设置储存
+                  localStorage.setItem('orders',JSON.stringify(r.msg[0]))
+                  this.$router.push('/profile')
+                }else{
+                  this.$router.push('/profile')
+                }
+
+              })
+
               //页面跳转到 profile
-              this.$router.push('/profile')
+
             }
 
             //如果导游登录成功
@@ -133,9 +147,24 @@
               //登录成功保存 localstorage
               let userData ={user_avatar:guide.data.guide_avatar, user_name:guide.data.guide_name, user_nick:guide.data.guide_nick, user_phone:guide.data.guide_phone, user_id:guide.data.guide_id,is_guide:'y'}
               localStorage.setItem('userInfo',JSON.stringify(userData))
+              this.$store.commit('changeGuideId',guide.data.guide_id)
 
+
+              getOngoingOrder({guide_id:guide.data.guide_id,user_id:0}).then(r=>{
+                if(r.code==='200'){
+                  this.$store.commit('changeOrderObj',r.msg[0])
+                  //设置储存
+                  localStorage.setItem('orders',JSON.stringify(r.msg[0]))
+                  this.$store.commit('changeReceiveFlag',true)
+                  localStorage.setItem('receiveFlag',JSON.stringify({flag:true}))
+                  this.$router.push('/profile')
+                }else{
+                  localStorage.removeItem('receiveFlag')
+                  this.$store.commit('changeReceiveFlag',false)
+                  this.$router.push('/profile')
+                }
+              })
               //页面跳转到 profile
-              this.$router.push('/profile')
             }
           })
       }

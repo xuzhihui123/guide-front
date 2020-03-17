@@ -69,6 +69,18 @@ const routes = [
     component:()=>import('views/nowbuytickets/NowBuyTicket')
   },
   {
+    path:'/orderDetails',
+    component:()=>import('views/orderdetail/OrderDetail')
+  },
+  {
+    path:'/myorders',
+    component:()=>import('views/myorders/MyOrders')
+  },
+  {
+    path:'/histroySingleOrder/:id',
+    component:()=>import('views/histroyOrderDetails/HistroyOrderDetails')
+  },
+  {
     path: '/',
     redirect: '/home'
   }
@@ -82,6 +94,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   let data = JSON.parse(localStorage.getItem('userInfo') || '{}')
+  // let orderObj = JSON.parse(localStorage.getItem('orders') || '{}')
 
   if(to.path==='/profiledetail' && from.path==='/'){
     data.is_save= 0
@@ -93,20 +106,20 @@ router.beforeEach((to, from, next) => {
     localStorage.setItem('userInfo',JSON.stringify(data))
   }
 
+
   if(to.path==='/profiledetail' && from.path==='/profile'){
     data.is_save= 0
     localStorage.setItem('userInfo',JSON.stringify(data))
   }
 
-
-  if (to.path === '/login' || to.path === '/register') {
+  if(to.path === '/login' || to.path === '/register') {
     if (data.user_name !== undefined) {
       return next('/profile')
     } else {
       return next()
     }
   }
-  if(to.path === '/profiledetail' || to.path === '/profiletags' || to.path==='/changepsd'){
+  if(to.path === '/profiledetail' || to.path === '/profiletags' || to.path==='/changepsd' || to.path==='/histroySingleOrder'){
     if (data.user_name !== undefined) {
       return next()
     } else {
