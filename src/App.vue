@@ -70,11 +70,11 @@
           this.socket = new WebSocket(`ws://49.235.26.253:8082/websocket/${id}`);
           //打开事件
           this.socket.onopen = function () {
-            console.log("Socket 已打开");
+           // console.log("Socket 已打开");
           };
           //获得消息事件
           this.socket.onmessage = (msg) => {
-            console.log(msg.data);
+            //console.log(msg.data);
             if (msg.data.indexOf('{') === 0) {
               this.$store.commit('changeOrderObj', JSON.parse(msg.data))
               //保存信息到localstorage 持久储存
@@ -115,7 +115,7 @@
           };
           //关闭事件
           this.socket.onclose = function () {
-            console.log("Socket已关闭");
+            //console.log("Socket已关闭");
           };
           //发生了错误事件
           this.socket.onerror = function () {
