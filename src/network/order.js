@@ -10,7 +10,7 @@ import {request} from "network/request";
 export function getAddress() {
   return request({
     method:'get',
-    url:'/getAddr',
+    url:'/getAddrJson',
   })
 }
 
