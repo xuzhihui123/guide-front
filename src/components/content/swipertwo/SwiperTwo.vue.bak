@@ -3,7 +3,7 @@
     <!-- slides -->
     <swiper-slide v-for="(item,i) in 6" :key="i">
       <div class="swiper-list_item">
-        <img src="~assets/avator.png" alt="">
+        <img src="~assets/pre-guide.jpg" alt="">
         <span class="name">周划水</span>
         <span class="fw">1888次服务</span>
       </div>
