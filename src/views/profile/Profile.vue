@@ -74,246 +74,245 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
+import { mapMutations } from 'vuex'
 
-//导入组件
-import ProfileList from "views/profile/children/ProfileList";
-import { VueCropper } from "vue-cropper";
+// 导入组件
+import ProfileList from 'views/profile/children/ProfileList'
+import { VueCropper } from 'vue-cropper'
 
-//导入network
+// 导入network
 import {
   submitAvator,
   changeUserAvator,
   getUserInfoById,
   changeGuideAvator,
-  getGuideInfoById,
-} from "network/profile";
+  getGuideInfoById
+} from 'network/profile'
 
-//导入工具commonjs
-import baseTofile from "commonjs/base64";
+// 导入工具commonjs
+import baseTofile from 'commonjs/base64'
 
 export default {
-  name: "Profile",
+  name: 'Profile',
   components: {
     ProfileList,
     VueCropper
   },
-  data() {
+  data () {
     return {
       singleUserInfo: {},
       topProfileView: false,
       topSubmitLogin: true,
-      //默认头像地址
-      getDefaultAvator: require("assets/avator.png"),
+      // 默认头像地址
+      getDefaultAvator: require('assets/avator.png'),
       imgList: [],
 
-      //cropper出现和隐藏
+      // cropper出现和隐藏
       cropperView: false,
       // cropper配置的参数
       option: {
-        img: "", //裁切图片的地址
-        outputSize: 1, //裁剪生成图片的质量 0.1-1
-        full: false, //是否输出原图比例的截图
-        outputType: "png", //裁剪生成图片的格式
-        canMove: true, //上传图片是否可以移动
-        fixedBox: false, //固定截图框大小 不允许改变
-        original: false, //上传图片按照原始比例渲染
-        canMoveBox: true, //截图框能否拖动
-        autoCrop: true, //是否默认生成截图框
+        img: '', // 裁切图片的地址
+        outputSize: 1, // 裁剪生成图片的质量 0.1-1
+        full: false, // 是否输出原图比例的截图
+        outputType: 'png', // 裁剪生成图片的格式
+        canMove: true, // 上传图片是否可以移动
+        fixedBox: false, // 固定截图框大小 不允许改变
+        original: false, // 上传图片按照原始比例渲染
+        canMoveBox: true, // 截图框能否拖动
+        autoCrop: true, // 是否默认生成截图框
         autoCropWidth: 200,
         autoCropHeight: 200,
         // 开启宽度和高度比例
         fixed: true,
         fixedNumber: [1, 1],
         canScale: true,
-        mode: "100%"
+        mode: '100%'
       }
-    };
+    }
   },
   methods: {
-    //跳到登录页
-    toLogin() {
-      this.$router.push("/login");
-      this.changeTabBarShow(false);
+    // 跳到登录页
+    toLogin () {
+      this.$router.push('/login')
+      this.changeTabBarShow(false)
     },
 
-    ...mapMutations(["changeTabBarShow"]),
+    ...mapMutations(['changeTabBarShow']),
 
-    //获取localstorage的用户信息
-    getUserInfo() {
+    // 获取localstorage的用户信息
+    getUserInfo () {
       this.singleUserInfo = JSON.parse(
-        localStorage.getItem("userInfo") || "{}"
-      );
+        localStorage.getItem('userInfo') || '{}'
+      )
     },
 
-    //读取头像之后 可发ajax给后台
-    afterRead(file) {
-      this.option.img = file.content;
-      this.cropperView = true;
+    // 读取头像之后 可发ajax给后台
+    afterRead (file) {
+      this.option.img = file.content
+      this.cropperView = true
     },
 
-    //读取头像之前 判断上传文件
-    beforeRead(file) {
+    // 读取头像之前 判断上传文件
+    beforeRead (file) {
       if (!/\/(jpg|jpeg|png|bmp|BMP|JPG|PNG|JPEG)$/.test(file.type)) {
         this.$toast({
-          type: "fail",
-          message: "您上传的不是图片格式哦~",
-          icon: "cross",
+          type: 'fail',
+          message: '您上传的不是图片格式哦~',
+          icon: 'cross',
           duration: 1500
-        });
-        return false;
+        })
+        return false
       } else {
-        return true;
+        return true
       }
     },
 
-    //截图完成
-    finish(type) {
-      if (type === "blob") {
-        this.$refs.cropper.getCropBlob(() => {});
+    // 截图完成
+    finish (type) {
+      if (type === 'blob') {
+        this.$refs.cropper.getCropBlob(() => {})
       } else {
-
         this.$refs.cropper.getCropData(data => {
-          //转换file对象 上传服务器
-          let TrueFile = baseTofile.dataURLtoFile(data, "avator");
+          // 转换file对象 上传服务器
+          const TrueFile = baseTofile.dataURLtoFile(data, 'avator')
 
-          let d = new FormData();
-          d.append("file", TrueFile);
+          const d = new FormData()
+          d.append('file', TrueFile)
 
-          //上传头像文件的接口
+          // 上传头像文件的接口
           submitAvator(d)
             .then(r => {
               if (r.length === 0) {
                 this.$toast({
-                  type: "fail",
-                  message: "上传头像失败!",
-                  icon: "cross",
+                  type: 'fail',
+                  message: '上传头像失败!',
+                  icon: 'cross',
                   duration: 1500
-                });
-                this.cropperView = false;
-                //清空
-                this.imgList = [];
+                })
+                this.cropperView = false
+                // 清空
+                this.imgList = []
               } else {
-                //如果是用户
-                if(this.singleUserInfo.is_guide===undefined){
+                // 如果是用户
+                if (this.singleUserInfo.is_guide === undefined) {
                   changeUserAvator({
                     userAvatar: r,
                     userId: this.singleUserInfo.user_id
                   }).then(res => {
-                    if (res.code === "200") {
+                    if (res.code === '200') {
                       this.$toast({
-                        type: "success",
-                        message: "头像更换成功！",
+                        type: 'success',
+                        message: '头像更换成功！',
                         duration: 1500
-                      });
-                      //隐藏cropper剪切
-                      this.cropperView = false;
-                      //清空
-                      this.imgList = [];
-                      //重新获取个人用户信息
+                      })
+                      // 隐藏cropper剪切
+                      this.cropperView = false
+                      // 清空
+                      this.imgList = []
+                      // 重新获取个人用户信息
                       getUserInfoById({
                         userId: this.singleUserInfo.user_id
                       }).then(resData => {
-                        if (resData.status.code === "200") {
-                          //获取新的用户信息
-                          let { user_avatar: change_user_acator } = resData.data;
-                          let userInfo = JSON.parse(
-                              localStorage.getItem("userInfo")
-                          );
-                          //跟改本地头像地址储存
-                          userInfo.user_avatar = change_user_acator;
-                          //跟改本地头像地址储存
+                        if (resData.status.code === '200') {
+                          // 获取新的用户信息
+                          const { user_avatar: change_user_acator } = resData.data
+                          const userInfo = JSON.parse(
+                            localStorage.getItem('userInfo')
+                          )
+                          // 跟改本地头像地址储存
+                          userInfo.user_avatar = change_user_acator
+                          // 跟改本地头像地址储存
                           localStorage.setItem(
-                              "userInfo",
-                              JSON.stringify(userInfo)
-                          );
-                          this.getUserInfo();
+                            'userInfo',
+                            JSON.stringify(userInfo)
+                          )
+                          this.getUserInfo()
                         }
-                      });
+                      })
                     }
-                  });
+                  })
                 }
-                //如果是导游
-                if(this.singleUserInfo.is_guide!==undefined){
+                // 如果是导游
+                if (this.singleUserInfo.is_guide !== undefined) {
                   changeGuideAvator({
                     guideAvatar: r,
                     guideId: this.singleUserInfo.user_id
                   }).then(res => {
-                    if (res.code === "200") {
+                    if (res.code === '200') {
                       this.$toast({
-                        type: "success",
-                        message: "头像更换成功！",
+                        type: 'success',
+                        message: '头像更换成功！',
                         duration: 1500
-                      });
-                      //隐藏cropper剪切
-                      this.cropperView = false;
-                      //清空
-                      this.imgList = [];
-                      //重新获取个人用户信息
+                      })
+                      // 隐藏cropper剪切
+                      this.cropperView = false
+                      // 清空
+                      this.imgList = []
+                      // 重新获取个人用户信息
                       getGuideInfoById({
-                       guideId: this.singleUserInfo.user_id
+                        guideId: this.singleUserInfo.user_id
                       }).then(resData => {
-                        if (resData.status.code === "200") {
-                          //获取新的用户信息
-                          let { guide_avatar: change_user_acator } = resData.data;
-                          let userInfo = JSON.parse(
-                              localStorage.getItem("userInfo")
-                          );
-                          //跟改本地头像地址储存
-                          userInfo.user_avatar = change_user_acator;
-                          //跟改本地头像地址储存
+                        if (resData.status.code === '200') {
+                          // 获取新的用户信息
+                          const { guide_avatar: change_user_acator } = resData.data
+                          const userInfo = JSON.parse(
+                            localStorage.getItem('userInfo')
+                          )
+                          // 跟改本地头像地址储存
+                          userInfo.user_avatar = change_user_acator
+                          // 跟改本地头像地址储存
                           localStorage.setItem(
-                              "userInfo",
-                              JSON.stringify(userInfo)
-                          );
-                          this.getUserInfo();
+                            'userInfo',
+                            JSON.stringify(userInfo)
+                          )
+                          this.getUserInfo()
                         }
-                      });
+                      })
                     }
-                  });
+                  })
                 }
               }
             })
-        });
+        })
       }
     },
-    //取消截图  就隐藏cropper
-    hiddenCropperView() {
+    // 取消截图  就隐藏cropper
+    hiddenCropperView () {
       // this.$refs.cropper.stopCrop()
-      this.cropperView = false;
+      this.cropperView = false
 
-      //清空
-      this.imgList = [];
+      // 清空
+      this.imgList = []
     },
 
-    goProfileDetail() {
-      this.$router.push("/profiledetail");
+    goProfileDetail () {
+      this.$router.push('/profiledetail')
     }
   },
-  created() {
-    this.getUserInfo();
+  created () {
+    this.getUserInfo()
   },
   watch: {
-    singleUserInfo(newValue) {
+    singleUserInfo (newValue) {
       if (newValue.user_nick !== undefined) {
-        this.topProfileView = true;
-        this.topSubmitLogin = false;
+        this.topProfileView = true
+        this.topSubmitLogin = false
       } else {
-        this.topProfileView = false;
-        this.topSubmitLogin = true;
+        this.topProfileView = false
+        this.topSubmitLogin = true
       }
     }
   },
   computed: {
-    changeUpLoader() {
+    changeUpLoader () {
       if (this.singleUserInfo.user_nick !== undefined) {
-        return true;
+        return true
       } else {
-        return false;
+        return false
       }
     }
   }
-};
+}
 </script>
 
 <style scoped lang="less">

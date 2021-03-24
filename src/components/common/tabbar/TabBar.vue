@@ -14,28 +14,28 @@
 </template>
 
 <script>
-  export default {
-    name: "TabBar",
-    props:{
-      tabBarIcon:{
-        type:Array,
-        default(){
-          return []
-        }
-      },
-      activeColor:{
-        type:String,
-        default(){
-          return "#000"
-        }
+export default {
+  name: 'TabBar',
+  props: {
+    tabBarIcon: {
+      type: Array,
+      default () {
+        return []
       }
     },
-    data(){
-      return {
-        active:0
+    activeColor: {
+      type: String,
+      default () {
+        return '#000'
       }
     }
+  },
+  data () {
+    return {
+      active: 0
+    }
   }
+}
 </script>
 
 <style scoped lang="less">

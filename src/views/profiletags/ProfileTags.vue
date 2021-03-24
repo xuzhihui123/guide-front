@@ -28,7 +28,6 @@
         </div>
       </div>
 
-
       <!--      <div class="zdy_tgs now_selected">-->
       <!--        <p class="title">自定义</p>-->
       <!--        <div class="zdy_tgs-click">+</div>-->
@@ -39,134 +38,131 @@
 </template>
 
 <script>
-  import {mapMutations} from 'vuex'
+import { mapMutations } from 'vuex'
 
-  //导入组件
-  import NavBar from 'common/navbar/NavBar'
+// 导入组件
+import NavBar from 'common/navbar/NavBar'
 
-  //导入network
-  import {getUserAllTags,getGuideAllTags} from 'network/profile'
+// 导入network
+import { getUserAllTags, getGuideAllTags } from 'network/profile'
 
-  export default {
-    name: "ProfileTags",
-    data() {
-      return {
-        userAllTags: [],
-        nowSelectedTags: [],
-        initSelectItemObj: {},
+export default {
+  name: 'ProfileTags',
+  data () {
+    return {
+      userAllTags: [],
+      nowSelectedTags: [],
+      initSelectItemObj: {}
+    }
+  },
+  methods: {
+    ...mapMutations(['changeTabBarShow', 'changeProfileTags']),
+
+    // 获取用户所有标签库
+    getUserTags () {
+      const data = JSON.parse(localStorage.getItem('userInfo')).is_guide
+
+      if (data) {
+        getGuideAllTags().then(r => {
+          this.userAllTags = r
+        })
+      } else {
+        getUserAllTags().then(r => {
+          this.userAllTags = r
+        })
       }
     },
-    methods: {
-      ...mapMutations(['changeTabBarShow','changeProfileTags']),
 
-
-      //获取用户所有标签库
-      getUserTags() {
-        let data = JSON.parse(localStorage.getItem('userInfo')).is_guide
-
-        if(data){
-          getGuideAllTags().then(r=>{
-            this.userAllTags = r
-          })
-        }else{
-          getUserAllTags().then(r => {
-            this.userAllTags = r
-          })
-        }
-      },
-
-      //选中标签点击
-      selectTagItem(item) {
-        this.initSelectItemObj[item] = !this.initSelectItemObj[item]
-        if (this.initSelectItemObj[item]) {
-          this.nowSelectedTags.push(item)
-        } else {
-          this.nowSelectedTags.some((Citem, i) => {
-            if (Citem === item) {
-              this.nowSelectedTags.splice(i, 1)
-              return true
-            }
-          })
-        }
-        //判断大于6个就不能 出现 点击的样式
-        if (this.nowSelectedTags.length > 6) {
-          this.nowSelectedTags.some(Citem => {
-            if (Citem === item) {
-              return true
-            }
-          })
-          this.initSelectItemObj[item] = false
-        }
-
-      },
-
-      //删除当前已选中的标签
-      deleteCurrentTag(item) {
-        //删除掉
-        this.nowSelectedTags.forEach((Citem, i) => {
+    // 选中标签点击
+    selectTagItem (item) {
+      this.initSelectItemObj[item] = !this.initSelectItemObj[item]
+      if (this.initSelectItemObj[item]) {
+        this.nowSelectedTags.push(item)
+      } else {
+        this.nowSelectedTags.some((Citem, i) => {
           if (Citem === item) {
             this.nowSelectedTags.splice(i, 1)
+            return true
           }
         })
-        //找到已经选中的样式去除
+      }
+      // 判断大于6个就不能 出现 点击的样式
+      if (this.nowSelectedTags.length > 6) {
+        this.nowSelectedTags.some(Citem => {
+          if (Citem === item) {
+            return true
+          }
+        })
         this.initSelectItemObj[item] = false
-      },
-
-
-      savaUserTags() {
-        if (this.nowSelectedTags.length === 0) {
-          return this.$toast({
-            type: 'fail',
-            message: '请添加标签在保存哦~'
-          })
-        }
-        let tagsStr = this.nowSelectedTags.join(',')
-
-        //保存到vuex
-        this.changeProfileTags(tagsStr)
-
-        this.$router.push('/profiledetail')
-      },
-    },
-    components: {
-      NavBar
-    },
-    watch: {
-
-      //初始化没被选中的标签
-      userAllTags(newValue) {
-        let cFlag = []
-        newValue.forEach(item => {
-          item.tags.forEach(Citem => {
-            cFlag.push(Citem)
-          })
-        })
-        cFlag.forEach(item => {
-          this.$set(this.initSelectItemObj, item, false)
-        })
-      },
-
-      //监听选中的标签的个数
-      nowSelectedTags(newValue) {
-        if (newValue.length > 6) {
-          this.$toast({
-            type: 'danger',
-            message: '不能超过6个标签哦~'
-          })
-          this.nowSelectedTags.pop()
-        }
       }
     },
-    created() {
-      this.getUserTags()
+
+    // 删除当前已选中的标签
+    deleteCurrentTag (item) {
+      // 删除掉
+      this.nowSelectedTags.forEach((Citem, i) => {
+        if (Citem === item) {
+          this.nowSelectedTags.splice(i, 1)
+        }
+      })
+      // 找到已经选中的样式去除
+      this.initSelectItemObj[item] = false
     },
-    deactivated() {
-      this.changeTabBarShow(true)
-    },
-    activated() {
-      this.changeTabBarShow(false)
+
+    savaUserTags () {
+      if (this.nowSelectedTags.length === 0) {
+        return this.$toast({
+          type: 'fail',
+          message: '请添加标签在保存哦~'
+        })
+      }
+      const tagsStr = this.nowSelectedTags.join(',')
+
+      // 保存到vuex
+      this.changeProfileTags(tagsStr)
+
+      this.$router.push('/profiledetail')
     }
+  },
+  components: {
+    NavBar
+  },
+  watch: {
+
+    // 初始化没被选中的标签
+    userAllTags (newValue) {
+      const cFlag = []
+      newValue.forEach(item => {
+        item.tags.forEach(Citem => {
+          cFlag.push(Citem)
+        })
+      })
+      cFlag.forEach(item => {
+        this.$set(this.initSelectItemObj, item, false)
+      })
+    },
+
+    // 监听选中的标签的个数
+    nowSelectedTags (newValue) {
+      if (newValue.length > 6) {
+        this.$toast({
+          type: 'danger',
+          message: '不能超过6个标签哦~'
+        })
+        this.nowSelectedTags.pop()
+      }
+    }
+  },
+  created () {
+    this.getUserTags()
+  },
+  deactivated () {
+    this.changeTabBarShow(true)
+  },
+  activated () {
+    this.changeTabBarShow(false)
   }
+}
 </script>
 
 <style scoped lang="less">

@@ -5,9 +5,9 @@
 </template>
 
 <script>
-  export default {
-    name: "NowBuyTicket"
-  }
+export default {
+  name: 'NowBuyTicket'
+}
 </script>
 
 <style scoped lang="less">

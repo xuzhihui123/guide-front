@@ -5,12 +5,12 @@
  * @Last Modified time: 2020/1/2
  */
 
-import {request} from "network/request";
+import { request } from './request'
 // //获取轮播图
 
-export function getBanner() {
-   return request({
-      method:'get',
-      url:'/getBanner'
-   })
+export function getBanner () {
+  return request({
+    method: 'get',
+    url: '/getBanner'
+  })
 }

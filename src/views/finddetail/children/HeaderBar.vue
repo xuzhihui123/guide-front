@@ -11,17 +11,17 @@
 </template>
 
 <script>
-  export default {
-    name: "HeaderBar",
-    methods:{
-      goBack(){
-        this.$router.go(-1)
-      },
-      goPostRequestion(){
-        this.$router.push('/postRequestions')
-      }
+export default {
+  name: 'HeaderBar',
+  methods: {
+    goBack () {
+      this.$router.go(-1)
+    },
+    goPostRequestion () {
+      this.$router.push('/postRequestions')
     }
   }
+}
 </script>
 
 <style scoped lang="less">

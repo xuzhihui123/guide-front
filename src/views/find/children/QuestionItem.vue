@@ -23,36 +23,36 @@
 </template>
 
 <script>
-  export default {
-    name: "QuestionItem",
-    props:{
-      questionItem:{
-        type:Object,
-        default(){
-          return {
+export default {
+  name: 'QuestionItem',
+  props: {
+    questionItem: {
+      type: Object,
+      default () {
+        return {
 
-          }
         }
       }
+    }
+  },
+  methods: {
+    goQuesDetail (id) {
+      this.$router.push(`/finddetail/${id}`)
     },
-    methods:{
-      goQuesDetail(id){
-          this.$router.push(`/finddetail/${id}`)
-      },
-      getImage(d){
-       if(d.length!==0){
-         return d[0].img
-       }else{
-         return ''
-       }
-      },
-
-      //图片加载
-      imageLoad(){
-        this.$bus.$emit('imgLoad')
+    getImage (d) {
+      if (d.length !== 0) {
+        return d[0].img
+      } else {
+        return ''
       }
+    },
+
+    // 图片加载
+    imageLoad () {
+      this.$bus.$emit('imgLoad')
     }
   }
+}
 </script>
 
 <style scoped lang="less">

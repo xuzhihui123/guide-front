@@ -69,7 +69,6 @@
           </div>
         </div>
 
-
         <!--      用户信息-->
         <div class="detail-item" style="margin-top: 0.2rem">
           <div class="detail-item_inner title">
@@ -97,40 +96,40 @@
 </template>
 
 <script>
-  import {getSingleOrderById} from 'network/order'
-  import BScroll from 'common/bscroll/BScroll'
+import { getSingleOrderById } from 'network/order'
+import BScroll from 'common/bscroll/BScroll'
 
-  export default {
-    name: "HistroyOrderDetails",
-    data() {
-      return {
-        singleOrderData: []
-      }
-    },
-    components: {
-      BScroll
-    },
-    methods: {
-      //获取当前的orderid的详细信息
-      async getDetail() {
-        let data = await getSingleOrderById(this.$route.params.id)
-        this.singleOrderData = data.data
-      },
-
-      //
-      goBack() {
-        this.$router.go(-1)
-      }
-    },
-    created() {
-      this.getDetail()
-      this.$notify({
-        message: '感谢您使用寻导平台~',
-        duration: 3000,
-        type: 'success'
-      });
+export default {
+  name: 'HistroyOrderDetails',
+  data () {
+    return {
+      singleOrderData: []
     }
+  },
+  components: {
+    BScroll
+  },
+  methods: {
+    // 获取当前的orderid的详细信息
+    async getDetail () {
+      const data = await getSingleOrderById(this.$route.params.id)
+      this.singleOrderData = data.data
+    },
+
+    //
+    goBack () {
+      this.$router.go(-1)
+    }
+  },
+  created () {
+    this.getDetail()
+    this.$notify({
+      message: '感谢您使用寻导平台~',
+      duration: 3000,
+      type: 'success'
+    })
   }
+}
 </script>
 
 <style scoped lang="less">

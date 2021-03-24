@@ -25,183 +25,175 @@
 </template>
 
 <script>
-  import {mapMutations,mapState} from 'vuex'
+import { mapMutations, mapState } from 'vuex'
 
-  //导入network
-  import {guideReceiveOrder, guideStopReceiveOrder} from 'network/order'
+// 导入network
+import { guideReceiveOrder, guideStopReceiveOrder } from 'network/order'
 
-  export default {
-    name: "GuideReceipt",
-    data() {
-      return {
-        isGoReceipt: false,
-        submitText: '开启接单',
-        activesTwo: 'activesTwo',
-        timeObj: {
-          hours: 0,
-          minutes: 0,
-          seconds: 0
-        },
-        timeObjInte: null,
-        guideId: null,
+export default {
+  name: 'GuideReceipt',
+  data () {
+    return {
+      isGoReceipt: false,
+      submitText: '开启接单',
+      activesTwo: 'activesTwo',
+      timeObj: {
+        hours: 0,
+        minutes: 0,
+        seconds: 0
+      },
+      timeObjInte: null,
+      guideId: null
+    }
+  },
+  methods: {
+    ...mapMutations(['changeTabBarShow', 'changeUserIsPay']),
+
+    // 获取导游id
+    getGuideId () {
+      const d = JSON.parse(localStorage.getItem('userInfo') || '{}').user_id
+      if (d) {
+        this.guideId = d
       }
     },
-    methods: {
-      ...mapMutations(['changeTabBarShow','changeUserIsPay']),
 
-      //获取导游id
-      getGuideId() {
-        let d = JSON.parse(localStorage.getItem('userInfo') || '{}').user_id
-        if (d) {
-          this.guideId = d
-        }
-      },
-
-
-      //开始接单submit
-      goReceipt() {
-        if (this.receiveFlag) {
-          return this.$toast({
-            type: "fail",
-            message: "您有一条订单待处理哦！",
-            icon: "cross",
-            duration: 1500
-          });
-        }
-
-
-        this.isGoReceipt = !this.isGoReceipt
-
-        //判断是否已经被用户结果单了  如果被接单了 则不能在开启接单
-
-
-        //开启接单操作
-        if (this.isGoReceipt) {
-          setTimeout(() => {
-            this.activesTwo = 'actives'
-          }, 1000)
-          this.submitText = '正在接单中...'
-
-          this.timeObjInte = setInterval(() => {
-            this.timeObj.seconds += 1
-            if (this.timeObj.seconds === 60) {
-              this.timeObj.seconds = 0
-              this.timeObj.minutes += 1
-            }
-            if (this.timeObj.minutes === 60) {
-              this.timeObj.minutes = 0
-              this.timeObj.hours += 1
-            }
-          }, 1000)
-
-          //发id给后台
-          guideReceiveOrder(this.guideId).then(r => {
-            if (!r.code === '200') {
-              return this.$toast({
-                type: "fail",
-                message: "服务器错误！",
-                icon: "cross",
-                duration: 1500
-              });
-            } else {
-              //开启websocket
-              this.$toast({
-                message: '您已开始接单!'
-              })
-            }
-          })
-
-          // 关闭了的操作
-        } else {
-          clearInterval(this.timeObjInte)
-          this.timeObj.seconds = 0
-          this.timeObj.minutes = 0
-          this.timeObj.hours = 0
-          this.activesTwo = 'activesTwo'
-          this.submitText = '开启接单'
-          guideStopReceiveOrder(this.guideId).then(r => {
-            if (!r.code === '200') {
-              return this.$toast({
-                type: "fail",
-                message: "服务器错误！",
-                icon: "cross",
-                duration: 1500
-              });
-            } else {
-              this.$toast({
-                message: '您已停止接单!'
-              })
-            }
-          })
-
-        }
-
-      },
-
-
-
-      //返回
-      goBack() {
-        this.$router.go(-1)
+    // 开始接单submit
+    goReceipt () {
+      if (this.receiveFlag) {
+        return this.$toast({
+          type: 'fail',
+          message: '您有一条订单待处理哦！',
+          icon: 'cross',
+          duration: 1500
+        })
       }
-    },
-    activated() {
-      this.changeTabBarShow(false)
-      this.getGuideId();
-    },
-    deactivated() {
-      this.changeTabBarShow(true)
-      this.getGuideId();
-    },
-    created() {
-      this.getGuideId();
-      this.$bus.$on('goGuideReceipt',()=>{
-        this.isGoReceipt = false
+
+      this.isGoReceipt = !this.isGoReceipt
+
+      // 判断是否已经被用户结果单了  如果被接单了 则不能在开启接单
+
+      // 开启接单操作
+      if (this.isGoReceipt) {
+        setTimeout(() => {
+          this.activesTwo = 'actives'
+        }, 1000)
+        this.submitText = '正在接单中...'
+
+        this.timeObjInte = setInterval(() => {
+          this.timeObj.seconds += 1
+          if (this.timeObj.seconds === 60) {
+            this.timeObj.seconds = 0
+            this.timeObj.minutes += 1
+          }
+          if (this.timeObj.minutes === 60) {
+            this.timeObj.minutes = 0
+            this.timeObj.hours += 1
+          }
+        }, 1000)
+
+        // 发id给后台
+        guideReceiveOrder(this.guideId).then(r => {
+          if (!r.code === '200') {
+            return this.$toast({
+              type: 'fail',
+              message: '服务器错误！',
+              icon: 'cross',
+              duration: 1500
+            })
+          } else {
+            // 开启websocket
+            this.$toast({
+              message: '您已开始接单!'
+            })
+          }
+        })
+
+        // 关闭了的操作
+      } else {
         clearInterval(this.timeObjInte)
         this.timeObj.seconds = 0
         this.timeObj.minutes = 0
         this.timeObj.hours = 0
         this.activesTwo = 'activesTwo'
         this.submitText = '开启接单'
-        this.$toast({
-          message: '您已停止接单!'
+        guideStopReceiveOrder(this.guideId).then(r => {
+          if (!r.code === '200') {
+            return this.$toast({
+              type: 'fail',
+              message: '服务器错误！',
+              icon: 'cross',
+              duration: 1500
+            })
+          } else {
+            this.$toast({
+              message: '您已停止接单!'
+            })
+          }
         })
-      })
-
-      //获取是否被用户选中的事件总线
-      this.$bus.$on('getToastForSuccess',()=>{
-        this.$toast({
-          message: '有用户选择您拉！',
-          type: 'success'
-        })
-      })
-
+      }
     },
-    computed: {
-      ...mapState(['receiveFlag']),
-      handleSeconds() {
-        if (this.timeObj.seconds < 10) {
-          return '0' + this.timeObj.seconds
-        } else {
-          return this.timeObj.seconds
-        }
-      },
-      handleMinutes() {
-        if (this.timeObj.minutes < 10) {
-          return '0' + this.timeObj.minutes
-        } else {
-          return this.timeObj.minutes
-        }
-      },
-      handleHours() {
-        if (this.timeObj.hours < 10) {
-          return '0' + this.timeObj.hours
-        } else {
-          return this.timeObj.hours
-        }
+
+    // 返回
+    goBack () {
+      this.$router.go(-1)
+    }
+  },
+  activated () {
+    this.changeTabBarShow(false)
+    this.getGuideId()
+  },
+  deactivated () {
+    this.changeTabBarShow(true)
+    this.getGuideId()
+  },
+  created () {
+    this.getGuideId()
+    this.$bus.$on('goGuideReceipt', () => {
+      this.isGoReceipt = false
+      clearInterval(this.timeObjInte)
+      this.timeObj.seconds = 0
+      this.timeObj.minutes = 0
+      this.timeObj.hours = 0
+      this.activesTwo = 'activesTwo'
+      this.submitText = '开启接单'
+      this.$toast({
+        message: '您已停止接单!'
+      })
+    })
+
+    // 获取是否被用户选中的事件总线
+    this.$bus.$on('getToastForSuccess', () => {
+      this.$toast({
+        message: '有用户选择您拉！',
+        type: 'success'
+      })
+    })
+  },
+  computed: {
+    ...mapState(['receiveFlag']),
+    handleSeconds () {
+      if (this.timeObj.seconds < 10) {
+        return '0' + this.timeObj.seconds
+      } else {
+        return this.timeObj.seconds
+      }
+    },
+    handleMinutes () {
+      if (this.timeObj.minutes < 10) {
+        return '0' + this.timeObj.minutes
+      } else {
+        return this.timeObj.minutes
+      }
+    },
+    handleHours () {
+      if (this.timeObj.hours < 10) {
+        return '0' + this.timeObj.hours
+      } else {
+        return this.timeObj.hours
       }
     }
   }
+}
 </script>
 
 <style scoped lang="less">

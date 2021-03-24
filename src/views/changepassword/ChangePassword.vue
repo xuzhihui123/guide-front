@@ -25,98 +25,98 @@
 </template>
 
 <script>
-import NavBar from "common/navbar/NavBar";
+import NavBar from 'common/navbar/NavBar'
 
-//导入network
-import { changeUserPassWord } from "network/profile";
+// 导入network
+import { changeUserPassWord } from 'network/profile'
 
-import { mapMutations } from "vuex";
+import { mapMutations } from 'vuex'
 
 export default {
-  name: "ChangePassword",
+  name: 'ChangePassword',
   components: {
     NavBar
   },
-  data() {
+  data () {
     return {
-      userPassword: "",
-      userPasswordNow: "",
-      userPassWordAgain: "",
-      iconImgs:{
-         closeEyes:require('assets/eyes_close.svg'),
-         openEyes:require('assets/eyes_open.svg')
+      userPassword: '',
+      userPasswordNow: '',
+      userPassWordAgain: '',
+      iconImgs: {
+        closeEyes: require('assets/eyes_close.svg'),
+        openEyes: require('assets/eyes_open.svg')
       },
-      textTypeStatus:{
-          userPasswordStatus:false,
-          userPasswordNowStatus:false,
-          userPassWordAgainStatus:false
+      textTypeStatus: {
+        userPasswordStatus: false,
+        userPasswordNowStatus: false,
+        userPassWordAgainStatus: false
       },
-      typeText: "text"
-    };
+      typeText: 'text'
+    }
   },
   methods: {
-    submitForm() {
+    submitForm () {
       if (this.userPasswordNow !== this.userPassWordAgain) {
         return this.$toast({
-          type: "fail",
-          message: "两次输入密码不一样！",
-          icon: "cross",
+          type: 'fail',
+          message: '两次输入密码不一样！',
+          icon: 'cross',
           duration: 1500
-        });
+        })
       }
-      let userId = JSON.parse(localStorage.getItem("userInfo")).user_id;
+      const userId = JSON.parse(localStorage.getItem('userInfo')).user_id
       changeUserPassWord({
         userId,
         newPassWord: this.userPasswordNow,
         oldPassWord: this.userPassword
       }).then(r => {
-        if (r.status.code === "502") {
+        if (r.status.code === '502') {
           this.$toast({
-            type: "fail",
-            message: "密码需要包括字母和数字且不低于6位！",
-            icon: "cross",
+            type: 'fail',
+            message: '密码需要包括字母和数字且不低于6位！',
+            icon: 'cross',
             duration: 1500
-          });
-        } else if (r.status.code === "506") {
+          })
+        } else if (r.status.code === '506') {
           this.$toast({
-            type: "fail",
-            message: "密码修改失败！原密码错误",
-            icon: "cross",
+            type: 'fail',
+            message: '密码修改失败！原密码错误',
+            icon: 'cross',
             duration: 1500
-          });
+          })
         } else {
           this.$toast({
-            type: "success",
-            message: "密码修改成功！请重新登录！",
+            type: 'success',
+            message: '密码修改成功！请重新登录！',
             duration: 1500
-          });
-          localStorage.removeItem("userInfo");
-          localStorage.setItem("userInfo", "{}");
-          this.$router.push("/login");
+          })
+          localStorage.removeItem('userInfo')
+          localStorage.setItem('userInfo', '{}')
+          this.$router.push('/login')
         }
-      });
+      })
     },
-    goBack() {
-      this.$router.go(-1);
+    goBack () {
+      this.$router.go(-1)
     },
-    ...mapMutations(["changeTabBarShow"]),
-    userPasswordClick(){
-        this.textTypeStatus.userPasswordStatus = !this.textTypeStatus.userPasswordStatus
+    ...mapMutations(['changeTabBarShow']),
+    userPasswordClick () {
+      this.textTypeStatus.userPasswordStatus = !this.textTypeStatus.userPasswordStatus
     },
-    userPasswordNowClick(){
+    userPasswordNowClick () {
       this.textTypeStatus.userPasswordNowStatus = !this.textTypeStatus.userPasswordNowStatus
     },
-    userPassWordAgainClick(){
-       this.textTypeStatus.userPassWordAgainStatus = !this.textTypeStatus.userPassWordAgainStatus
+    userPassWordAgainClick () {
+      this.textTypeStatus.userPassWordAgainStatus = !this.textTypeStatus.userPassWordAgainStatus
     }
   },
-  activated() {
-    this.changeTabBarShow(false);
+  activated () {
+    this.changeTabBarShow(false)
   },
-  deactivated() {
-    this.changeTabBarShow(true);
+  deactivated () {
+    this.changeTabBarShow(true)
   }
-};
+}
 </script>
 <style lang='less' scoped>
 .left {

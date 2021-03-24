@@ -51,7 +51,6 @@
                        :panel="false"></bm-local-search>
     </baidu-map>
 
-
     <!--    搜索到的地区的显示-->
     <transition enter-active-class="animated fadeIn" leave-active-class="animated fadeOut" mode="out-in"
                 :duretion="{enter:200,leave:200}">
@@ -71,7 +70,6 @@
       </div>
     </transition>
 
-
     <!--     没获取到导游列表显示-->
     <div class="cry-error" v-show="!isShowGuideList">
       <img src="~assets/main-logo.png" alt="">
@@ -81,254 +79,249 @@
 </template>
 
 <script>
-  import {mapMutations} from 'vuex'
+import { mapMutations } from 'vuex'
 
-  //导入network
-  import {getAddress, getOnlineGuide, selectGuideAndCreateOrder} from 'network/order'
+// 导入network
+import { getAddress, getOnlineGuide, selectGuideAndCreateOrder } from 'network/order'
 
-  import BScroll from 'common/bscroll/BScroll'
+import BScroll from 'common/bscroll/BScroll'
 
-  export default {
-    name: "NowFindGuide",
-    data() {
-      return {
-        destinationText: '',
-        postDestinationText: '',
-        postDetailText: '',
-        address: '',
-        isShowMap: false,
-        isShowAddressDiv: false,
-        isShowGuideList: false,
-        add: '',
-        zoomMap: 14,
-        DesaddrList: [],
-        guideList: [],
-        userId: null,
-        socket: null
-      }
+export default {
+  name: 'NowFindGuide',
+  data () {
+    return {
+      destinationText: '',
+      postDestinationText: '',
+      postDetailText: '',
+      address: '',
+      isShowMap: false,
+      isShowAddressDiv: false,
+      isShowGuideList: false,
+      add: '',
+      zoomMap: 14,
+      DesaddrList: [],
+      guideList: [],
+      userId: null,
+      socket: null
+    }
+  },
+  methods: {
+    ...mapMutations(['changeTabBarShow']),
+    goBack () {
+      this.$router.go(-1)
     },
-    methods: {
-      ...mapMutations(['changeTabBarShow']),
-      goBack() {
-        this.$router.go(-1)
-      },
 
-      //调用地址赋值
-      getAddressInfo() {
-        this.$dialog.confirm({
-          title: '获取您的定位信息',
-        }).then(async () => {
-          let d = await getAddress()
-          this.address = d.province + ',' + d.city
-          this.add = d.city
-        }).catch(() => {
-          this.address = '获取位置失败'
-          this.add = ''
-        });
-      },
+    // 调用地址赋值
+    getAddressInfo () {
+      this.$dialog.confirm({
+        title: '获取您的定位信息'
+      }).then(async () => {
+        const d = await getAddress()
+        this.address = d.province + ',' + d.city
+        this.add = d.city
+      }).catch(() => {
+        this.address = '获取位置失败'
+        this.add = ''
+      })
+    },
 
-      //获取在线导游
-      submitGetGuide() {
-        let d = JSON.parse(localStorage.getItem('userInfo') || '{}')
-        if (d.is_guide) {
-          return this.$toast({
-            type: "fail",
-            message: "您是导游哦！",
-            icon: "cross",
-            duration: 1500
-          });
-        }
-        if (this.address === '获取位置失败') {
-          return this.$toast({
-            type: "fail",
-            message: "请先获取位置信息！",
-            icon: "cross",
-            duration: 1500
-          });
-        }
-        if (!d.user_name) {
-          this.$toast({
-            type: "fail",
-            message: "请先登录！",
-            icon: "cross",
-            duration: 1500
-          });
-          this.$router.push('/login')
-        } else {
-          //如果没有输入目的地
-          if (!this.destinationText) {
-            return this.$toast({
-              type: "fail",
-              message: "请输入目的地！",
-              icon: "cross",
-              duration: 1500
-            });
-          } else {
-            getOnlineGuide({
-              orderDst: this.postDestinationText,
-            }).then(r => {
-              if (r.status.code === '200') {
-                //如果获取到了  不显示目的地列表
-                this.isShowAddressDiv = false
-                //显示导游列表
-                this.isShowGuideList = true
-                this.guideList = r.data
-              } else if (r.status.code === '500') {
-                this.guideList = []
-                this.isShowAddressDiv = false
-                return this.$toast({
-                  type: "fail",
-                  message: "该地区暂无人接单！",
-                  duration: 1500
-                });
-              } else {
-                this.isShowAddressDiv = false
-                return this.$toast({
-                  type: "fail",
-                  message: "服务器错误！",
-                  duration: 1500
-                });
-              }
-            })
-          }
-        }
-      },
-
-
-      clickMap({target}) {
-        console.log(target);
-      },
-
-
-      //目的地改变 生成的检索数组
-      markerssets(d) {
+    // 获取在线导游
+    submitGetGuide () {
+      const d = JSON.parse(localStorage.getItem('userInfo') || '{}')
+      if (d.is_guide) {
+        return this.$toast({
+          type: 'fail',
+          message: '您是导游哦！',
+          icon: 'cross',
+          duration: 1500
+        })
+      }
+      if (this.address === '获取位置失败') {
+        return this.$toast({
+          type: 'fail',
+          message: '请先获取位置信息！',
+          icon: 'cross',
+          duration: 1500
+        })
+      }
+      if (!d.user_name) {
+        this.$toast({
+          type: 'fail',
+          message: '请先登录！',
+          icon: 'cross',
+          duration: 1500
+        })
+        this.$router.push('/login')
+      } else {
+        // 如果没有输入目的地
         if (!this.destinationText) {
-          this.isShowAddressDiv = false
-        }
-
-        this.DesaddrList = d
-      },
-
-      //选中选择的目的地
-      changeInputDestin(item) {
-        this.destinationText = item.title
-        if (item.city) {
-          this.postDestinationText = item.city
-          this.postDetailText = item.province + ',' + item.city + ',' + item.address + ',' + item.title
+          return this.$toast({
+            type: 'fail',
+            message: '请输入目的地！',
+            icon: 'cross',
+            duration: 1500
+          })
         } else {
-          this.postDestinationText = item.address
-          this.postDetailText = item.address + ',' + item.title
-        }
-      },
-
-      // 获取用户id
-      getUserId() {
-        let d = JSON.parse(localStorage.getItem('userInfo') || '{}').user_id
-        if (d) {
-          this.userId = d
-        }
-      },
-
-      //选择导游
-      selectSingleGuide(guide_id) {
-        this.$dialog.confirm({
-          title: '确认选择导游'
-        }).then(() => {
-          selectGuideAndCreateOrder({
-            guide_id,
-            user_id: this.userId,
-            orderDst: this.postDestinationText,
-            orderPrice: '面议',
-            detailedLocation: this.postDetailText
+          getOnlineGuide({
+            orderDst: this.postDestinationText
           }).then(r => {
-            if (!r.status) {
-              return this.$toast({
-                type: "fail",
-                message: "您已有一个订单待操作！",
-                icon: "cross",
-                duration: 1500
-              });
-            }
             if (r.status.code === '200') {
-              this.$toast({
-                message: '选择成功！'
+              // 如果获取到了  不显示目的地列表
+              this.isShowAddressDiv = false
+              // 显示导游列表
+              this.isShowGuideList = true
+              this.guideList = r.data
+            } else if (r.status.code === '500') {
+              this.guideList = []
+              this.isShowAddressDiv = false
+              return this.$toast({
+                type: 'fail',
+                message: '该地区暂无人接单！',
+                duration: 1500
               })
-              this.$store.commit('changeOrderObj', r.data)
-              //保存信息到localstorage 持久储存
-              localStorage.setItem('orders',JSON.stringify(r.data))
-              this.$router.push('/orders')
+            } else {
+              this.isShowAddressDiv = false
+              return this.$toast({
+                type: 'fail',
+                message: '服务器错误！',
+                duration: 1500
+              })
             }
           })
-        }).catch(() => {
-          this.$toast({
-            type: 'info',
-            message: '已取消'
-          });
-        });
+        }
+      }
+    },
 
+    clickMap ({ target }) {
+      console.log(target)
+    },
 
-      },
+    // 目的地改变 生成的检索数组
+    markerssets (d) {
+      if (!this.destinationText) {
+        this.isShowAddressDiv = false
+      }
 
+      this.DesaddrList = d
+    },
 
-      //用户开启websocket
-      openWebscoketUser(id) {
-        if (typeof (WebSocket) == "undefined") {
-          console.log("您的浏览器不支持WebSocket");
-        } else {
-          this.socket = new WebSocket(`ws://49.235.26.253:8082/websocket/${id}`);
-          //打开事件
-          this.socket.onopen = function () {
-            console.log("Socket 已打开");
-          };
-          //获得消息事件
-          this.socket.onmessage = function (msg) {
-            console.log(msg.data);
-            //发现消息进入    开始处理前端触发逻辑
-          };
-          //关闭事件
-          this.socket.onclose = function () {
-            console.log("Socket已关闭");
-          };
-          //发生了错误事件
-          this.socket.onerror = function () {
-            alert("Socket发生了错误");
-            //此时可以尝试刷新页面
+    // 选中选择的目的地
+    changeInputDestin (item) {
+      this.destinationText = item.title
+      if (item.city) {
+        this.postDestinationText = item.city
+        this.postDetailText = item.province + ',' + item.city + ',' + item.address + ',' + item.title
+      } else {
+        this.postDestinationText = item.address
+        this.postDetailText = item.address + ',' + item.title
+      }
+    },
+
+    // 获取用户id
+    getUserId () {
+      const d = JSON.parse(localStorage.getItem('userInfo') || '{}').user_id
+      if (d) {
+        this.userId = d
+      }
+    },
+
+    // 选择导游
+    selectSingleGuide (guide_id) {
+      this.$dialog.confirm({
+        title: '确认选择导游'
+      }).then(() => {
+        selectGuideAndCreateOrder({
+          guide_id,
+          user_id: this.userId,
+          orderDst: this.postDestinationText,
+          orderPrice: '面议',
+          detailedLocation: this.postDetailText
+        }).then(r => {
+          if (!r.status) {
+            return this.$toast({
+              type: 'fail',
+              message: '您已有一个订单待操作！',
+              icon: 'cross',
+              duration: 1500
+            })
           }
-        }
-      },
+          if (r.status.code === '200') {
+            this.$toast({
+              message: '选择成功！'
+            })
+            this.$store.commit('changeOrderObj', r.data)
+            // 保存信息到localstorage 持久储存
+            localStorage.setItem('orders', JSON.stringify(r.data))
+            this.$router.push('/orders')
+          }
+        })
+      }).catch(() => {
+        this.$toast({
+          type: 'info',
+          message: '已取消'
+        })
+      })
     },
 
-    destroyed() {
-      this.changeTabBarShow(true)
-    },
-    created() {
-      this.changeTabBarShow(false)
-      this.getAddressInfo()
-      //获取用户id
-      this.getUserId()
-    },
-    components: {
-      BScroll
-    },
-    watch: {
-      //监听目的地text信息为空的话清空 地址列表
-      destinationText(newValue) {
-        //如果没有就隐藏 地址列表
-        if (!newValue) {
-          this.isShowAddressDiv = false
-          this.DesaddrList = []
-        } else {
-          this.isShowAddressDiv = true
+    // 用户开启websocket
+    openWebscoketUser (id) {
+      if (typeof (WebSocket) === 'undefined') {
+        console.log('您的浏览器不支持WebSocket')
+      } else {
+        this.socket = new WebSocket(`ws://49.235.26.253:8082/websocket/${id}`)
+        // 打开事件
+        this.socket.onopen = function () {
+          console.log('Socket 已打开')
         }
-      },
-      DesaddrList(newValue) {
-        if (newValue) {
-          this.$refs.bscroll.refresh()
+        // 获得消息事件
+        this.socket.onmessage = function (msg) {
+          console.log(msg.data)
+          // 发现消息进入    开始处理前端触发逻辑
+        }
+        // 关闭事件
+        this.socket.onclose = function () {
+          console.log('Socket已关闭')
+        }
+        // 发生了错误事件
+        this.socket.onerror = function () {
+          alert('Socket发生了错误')
+          // 此时可以尝试刷新页面
         }
       }
     }
+  },
 
+  destroyed () {
+    this.changeTabBarShow(true)
+  },
+  created () {
+    this.changeTabBarShow(false)
+    this.getAddressInfo()
+    // 获取用户id
+    this.getUserId()
+  },
+  components: {
+    BScroll
+  },
+  watch: {
+    // 监听目的地text信息为空的话清空 地址列表
+    destinationText (newValue) {
+      // 如果没有就隐藏 地址列表
+      if (!newValue) {
+        this.isShowAddressDiv = false
+        this.DesaddrList = []
+      } else {
+        this.isShowAddressDiv = true
+      }
+    },
+    DesaddrList (newValue) {
+      if (newValue) {
+        this.$refs.bscroll.refresh()
+      }
+    }
   }
+
+}
 </script>
 
 <style scoped lang="less">

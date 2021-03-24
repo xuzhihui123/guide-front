@@ -78,69 +78,68 @@
 </template>
 
 <script>
-  import BScroll from 'common/bscroll/BScroll'
+import BScroll from 'common/bscroll/BScroll'
 
-  //导入network
-  import {getAlreadyOrder} from 'network/order'
+// 导入network
+import { getAlreadyOrder } from 'network/order'
 
-  export default {
-    name: "MyOrders",
-    data() {
-      return {
-        isShowEmpty: false,
-        isShowGuide:false,
-        orderDataList: []
-      }
-    },
-    methods: {
-      //获取已完成的订单
-      async getAllMyOrders() {
-        let userInfo = JSON.parse(localStorage.getItem('userInfo') || "{}")
-        //如果有flag  则是导游
-      if(userInfo.user_id){
+export default {
+  name: 'MyOrders',
+  data () {
+    return {
+      isShowEmpty: false,
+      isShowGuide: false,
+      orderDataList: []
+    }
+  },
+  methods: {
+    // 获取已完成的订单
+    async getAllMyOrders () {
+      const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}')
+      // 如果有flag  则是导游
+      if (userInfo.user_id) {
         if (userInfo.is_guide) {
-          let data = await getAlreadyOrder({guide_id: userInfo.user_id, user_id: 0})
+          const data = await getAlreadyOrder({ guide_id: userInfo.user_id, user_id: 0 })
           this.orderDataList = data.data
           this.isShowGuide = true
-        } else {  //用户的
-          let data = await getAlreadyOrder({guide_id: 0, user_id: userInfo.user_id})
+        } else { // 用户的
+          const data = await getAlreadyOrder({ guide_id: 0, user_id: userInfo.user_id })
           this.orderDataList = data.data
           this.isShowGuide = false
         }
       }
-      },
-
-      //再来一单
-      secondSubimt(){
-        this.$router.push('/nowfindGuide')
-      },
-
-
-      //跳转到单个订单详情页面
-      goSingleOrder(id){
-        this.$router.push('/histroySingleOrder/'+id)
-      }
     },
-    watch: {
-      //监听数据有无变化 空数据则显示无订单信息 否则显示订单信息
-      orderDataList: {
-        immediate: true,
-        handler(newValue) {
-          if (newValue.length !== 0) {
-            this.isShowEmpty = false
-          } else {
-            this.isShowEmpty = true
-          }
+
+    // 再来一单
+    secondSubimt () {
+      this.$router.push('/nowfindGuide')
+    },
+
+    // 跳转到单个订单详情页面
+    goSingleOrder (id) {
+      this.$router.push('/histroySingleOrder/' + id)
+    }
+  },
+  watch: {
+    // 监听数据有无变化 空数据则显示无订单信息 否则显示订单信息
+    orderDataList: {
+      immediate: true,
+      handler (newValue) {
+        if (newValue.length !== 0) {
+          this.isShowEmpty = false
+        } else {
+          this.isShowEmpty = true
         }
       }
-    },
-    components: {
-      BScroll
-    },
-    created() {
-      this.getAllMyOrders()
     }
+  },
+  components: {
+    BScroll
+  },
+  created () {
+    this.getAllMyOrders()
   }
+}
 </script>
 
 <style scoped lang="less">

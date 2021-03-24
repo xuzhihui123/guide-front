@@ -52,109 +52,109 @@
 </template>
 
 <script>
-  import {mapMutations} from "vuex";
+import { mapMutations } from 'vuex'
 
-  //导入组件
-  import NavBar from "common/navbar/NavBar";
+// 导入组件
+import NavBar from 'common/navbar/NavBar'
 
-  //导入network
-  import {getUserInfoById, getGuideInfoById} from "network/profile";
+// 导入network
+import { getUserInfoById, getGuideInfoById } from 'network/profile'
 
-  export default {
-    name: "ProfileDetailShow",
-    components: {
-      NavBar
-    },
-    data() {
-      return {
-        navbarBg: "transparent",
-        avatarShow: false,
-        profileDetailData: [
-          {userNick: "", userSex: null, userAvatar: ""},
-          {
-            profileText: "",
-            profileTags: []
-          }
-        ],
-        defaultAvatar: require("assets/avator.png")
-      };
-    },
-    methods: {
-      ...mapMutations(["changeTabBarShow"]),
-      goBack() {
-        this.$router.push("/profile");
-      },
-      //获取个人用户信息
-      getUserByIdDetail() {
-        let data = JSON.parse(localStorage.getItem("userInfo") || "{}");
-        let userId = data.user_id
-        if (data.is_guide) {
-          if (userId) {
-            getGuideInfoById({
-              guideId: userId
-            }).then(r => {
-              this.profileDetailData[0].userNick = r.data.guide_nick || "";
-              this.profileDetailData[0].userSex = r.data.guide_sex || 0;
-              this.profileDetailData[0].userAvatar =
-                  r.data.guide_avatar || this.defaultAvatar;
-
-              if (r.profile !== null) {
-                this.profileDetailData[1].profileText = r.profile.text;
-                if (r.profile.tags[0] === "") {
-                  this.profileDetailData[1].profileTags = [];
-                } else {
-                  this.profileDetailData[1].profileTags = r.profile.tags;
-                }
-              } else {
-                this.profileDetailData[1].profileText = "";
-                this.profileDetailData[1].profileTags = [];
-              }
-            })
-          } else {
-            this.profileDetailData[0].userAvatar = this.defaultAvatar
-          }
-        } else {
-          if (userId) {
-            getUserInfoById({
-              userId
-            }).then(r => {
-              this.profileDetailData[0].userNick = r.data.user_nick || "";
-              this.profileDetailData[0].userSex = r.data.user_sex || 0;
-              this.profileDetailData[0].userAvatar =
-                  r.data.user_avatar || this.defaultAvatar;
-
-              if (r.profile !== null) {
-                this.profileDetailData[1].profileText = r.profile.text;
-                if (r.profile.tags[0] === "") {
-                  this.profileDetailData[1].profileTags = [];
-                } else {
-                  this.profileDetailData[1].profileTags = r.profile.tags;
-                }
-              } else {
-                this.profileDetailData[1].profileText = "";
-                this.profileDetailData[1].profileTags = [];
-              }
-            });
-          } else {
-            this.profileDetailData[0].userAvatar = this.defaultAvatar
-          }
+export default {
+  name: 'ProfileDetailShow',
+  components: {
+    NavBar
+  },
+  data () {
+    return {
+      navbarBg: 'transparent',
+      avatarShow: false,
+      profileDetailData: [
+        { userNick: '', userSex: null, userAvatar: '' },
+        {
+          profileText: '',
+          profileTags: []
         }
-      },
+      ],
+      defaultAvatar: require('assets/avator.png')
+    }
+  },
+  methods: {
+    ...mapMutations(['changeTabBarShow']),
+    goBack () {
+      this.$router.push('/profile')
+    },
+    // 获取个人用户信息
+    getUserByIdDetail () {
+      const data = JSON.parse(localStorage.getItem('userInfo') || '{}')
+      const userId = data.user_id
+      if (data.is_guide) {
+        if (userId) {
+          getGuideInfoById({
+            guideId: userId
+          }).then(r => {
+            this.profileDetailData[0].userNick = r.data.guide_nick || ''
+            this.profileDetailData[0].userSex = r.data.guide_sex || 0
+            this.profileDetailData[0].userAvatar =
+                  r.data.guide_avatar || this.defaultAvatar
 
-      //展示大头像
-      showAvator() {
-        this.avatarShow = true
+            if (r.profile !== null) {
+              this.profileDetailData[1].profileText = r.profile.text
+              if (r.profile.tags[0] === '') {
+                this.profileDetailData[1].profileTags = []
+              } else {
+                this.profileDetailData[1].profileTags = r.profile.tags
+              }
+            } else {
+              this.profileDetailData[1].profileText = ''
+              this.profileDetailData[1].profileTags = []
+            }
+          })
+        } else {
+          this.profileDetailData[0].userAvatar = this.defaultAvatar
+        }
+      } else {
+        if (userId) {
+          getUserInfoById({
+            userId
+          }).then(r => {
+            this.profileDetailData[0].userNick = r.data.user_nick || ''
+            this.profileDetailData[0].userSex = r.data.user_sex || 0
+            this.profileDetailData[0].userAvatar =
+                  r.data.user_avatar || this.defaultAvatar
+
+            if (r.profile !== null) {
+              this.profileDetailData[1].profileText = r.profile.text
+              if (r.profile.tags[0] === '') {
+                this.profileDetailData[1].profileTags = []
+              } else {
+                this.profileDetailData[1].profileTags = r.profile.tags
+              }
+            } else {
+              this.profileDetailData[1].profileText = ''
+              this.profileDetailData[1].profileTags = []
+            }
+          })
+        } else {
+          this.profileDetailData[0].userAvatar = this.defaultAvatar
+        }
       }
     },
-    created() {
-      this.changeTabBarShow(false);
 
-      this.getUserByIdDetail();
-    },
-    destroyed() {
-      this.changeTabBarShow(true);
+    // 展示大头像
+    showAvator () {
+      this.avatarShow = true
     }
-  };
+  },
+  created () {
+    this.changeTabBarShow(false)
+
+    this.getUserByIdDetail()
+  },
+  destroyed () {
+    this.changeTabBarShow(true)
+  }
+}
 </script>
 <style lang='less' scoped>
   .top_bg {

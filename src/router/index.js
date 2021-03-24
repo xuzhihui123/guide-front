@@ -13,12 +13,12 @@ const routes = [
     component: () => import('views/find/Find')
   },
   {
-    path:'/finddetail/:id',
-    component:()=>import('views/finddetail/FindDetail')
+    path: '/finddetail/:id',
+    component: () => import('views/finddetail/FindDetail')
   },
   {
-    path:'/postRequestions',
-    component:()=>import('views/postrequestion/PostRequestion')
+    path: '/postRequestions',
+    component: () => import('views/postrequestion/PostRequestion')
   },
   {
     path: '/orders',
@@ -37,48 +37,48 @@ const routes = [
     component: () => import('views/register/Register')
   },
   {
-    path:'/profiledetail',
-    component:()=>import('views/profiledetail/ProfileDetail')
+    path: '/profiledetail',
+    component: () => import('views/profiledetail/ProfileDetail')
   },
   {
-    path:'/profiletags',
-    component:()=>import('views/profiletags/ProfileTags')
+    path: '/profiletags',
+    component: () => import('views/profiletags/ProfileTags')
   },
   {
-    path:'/changepsd',
-    component:()=>import('views/changepassword/ChangePassword')
+    path: '/changepsd',
+    component: () => import('views/changepassword/ChangePassword')
   },
   {
-    path:'/profiledetailshow',
-    component:()=>import('views/profiledetailshow/ProfileDetailShow')
+    path: '/profiledetailshow',
+    component: () => import('views/profiledetailshow/ProfileDetailShow')
   },
   {
-    path:'/search',
-    component:()=>import('views/search/Search')
+    path: '/search',
+    component: () => import('views/search/Search')
   },
   {
-    path:'/guideReceipt',
-    component:()=>import('views/guidereceipt/GuideReceipt')
+    path: '/guideReceipt',
+    component: () => import('views/guidereceipt/GuideReceipt')
   },
   {
-    path:'/nowfindGuide',
-    component:()=>import('views/nowfindguide/NowFindGuide')
+    path: '/nowfindGuide',
+    component: () => import('views/nowfindguide/NowFindGuide')
   },
   {
-    path:'/nowbuytickets',
-    component:()=>import('views/nowbuytickets/NowBuyTicket')
+    path: '/nowbuytickets',
+    component: () => import('views/nowbuytickets/NowBuyTicket')
   },
   {
-    path:'/orderDetails',
-    component:()=>import('views/orderdetail/OrderDetail')
+    path: '/orderDetails',
+    component: () => import('views/orderdetail/OrderDetail')
   },
   {
-    path:'/myorders',
-    component:()=>import('views/myorders/MyOrders')
+    path: '/myorders',
+    component: () => import('views/myorders/MyOrders')
   },
   {
-    path:'/histroySingleOrder/:id',
-    component:()=>import('views/histroyOrderDetails/HistroyOrderDetails')
+    path: '/histroySingleOrder/:id',
+    component: () => import('views/histroyOrderDetails/HistroyOrderDetails')
   },
   {
     path: '/',
@@ -93,33 +93,32 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  let data = JSON.parse(localStorage.getItem('userInfo') || '{}')
+  const data = JSON.parse(localStorage.getItem('userInfo') || '{}')
   // let orderObj = JSON.parse(localStorage.getItem('orders') || '{}')
 
-  if(to.path==='/profiledetail' && from.path==='/'){
-    data.is_save= 0
-    localStorage.setItem('userInfo',JSON.stringify(data))
+  if (to.path === '/profiledetail' && from.path === '/') {
+    data.is_save = 0
+    localStorage.setItem('userInfo', JSON.stringify(data))
   }
 
-  if(to.path==='/profiledetail' && from.path==='/profiletags'){
-    data.is_save= 1
-    localStorage.setItem('userInfo',JSON.stringify(data))
+  if (to.path === '/profiledetail' && from.path === '/profiletags') {
+    data.is_save = 1
+    localStorage.setItem('userInfo', JSON.stringify(data))
   }
 
-
-  if(to.path==='/profiledetail' && from.path==='/profile'){
-    data.is_save= 0
-    localStorage.setItem('userInfo',JSON.stringify(data))
+  if (to.path === '/profiledetail' && from.path === '/profile') {
+    data.is_save = 0
+    localStorage.setItem('userInfo', JSON.stringify(data))
   }
 
-  if(to.path === '/login' || to.path === '/register') {
+  if (to.path === '/login' || to.path === '/register') {
     if (data.user_name !== undefined) {
       return next('/profile')
     } else {
       return next()
     }
   }
-  if(to.path === '/profiledetail' || to.path === '/profiletags' || to.path==='/changepsd' || to.path==='/histroySingleOrder'){
+  if (to.path === '/profiledetail' || to.path === '/profiletags' || to.path === '/changepsd' || to.path === '/histroySingleOrder') {
     if (data.user_name !== undefined) {
       return next()
     } else {
@@ -127,10 +126,10 @@ router.beforeEach((to, from, next) => {
     }
   }
 
-  if(to.path==='/guideReceipt'){
-    if(data.is_guide){
+  if (to.path === '/guideReceipt') {
+    if (data.is_guide) {
       return next()
-    }else{
+    } else {
       return next('/profile')
     }
   }

@@ -19,50 +19,49 @@
 </template>
 
 <script>
-  import {insertQuestionDz} from 'network/find'
+import { insertQuestionDz } from 'network/find'
 
-  export default {
-    name: "BottomControlBar",
-    props: {
-      likeAndCommentCount: {
-        type: Object,
-        default() {
-          return {}
-        }
+export default {
+  name: 'BottomControlBar',
+  props: {
+    likeAndCommentCount: {
+      type: Object,
+      default () {
+        return {}
       }
-    },
-    data() {
-      return {
-        dzImage: {
-          inactive: require('assets/like-icon.svg'),
-        }
+    }
+  },
+  data () {
+    return {
+      dzImage: {
+        inactive: require('assets/like-icon.svg')
       }
+    }
+  },
+  methods: {
+    editCommentClick () {
+      this.$parent.isShowCommentEdit(true)
     },
-    methods: {
-      editCommentClick() {
-        this.$parent.isShowCommentEdit(true)
-      },
 
-
-      //点赞
-      async inseQuestionDz() {
-        let isGuide = JSON.parse(localStorage.getItem('userInfo')).is_guide
-        if(isGuide){
-          return this.$toast({
-            type: "fail",
-            message: "导游论坛暂时未开放哦！",
-            icon: "cross",
-            duration: 1500
-          });
-        }
-        let d = await insertQuestionDz(this.$route.params.id)
-        if (d.code === '200') {
-          this.dzImage.inactive = require('assets/like-icon-two.svg')
-          this.$parent.getQuestionById()
-        }
+    // 点赞
+    async inseQuestionDz () {
+      const isGuide = JSON.parse(localStorage.getItem('userInfo')).is_guide
+      if (isGuide) {
+        return this.$toast({
+          type: 'fail',
+          message: '导游论坛暂时未开放哦！',
+          icon: 'cross',
+          duration: 1500
+        })
+      }
+      const d = await insertQuestionDz(this.$route.params.id)
+      if (d.code === '200') {
+        this.dzImage.inactive = require('assets/like-icon-two.svg')
+        this.$parent.getQuestionById()
       }
     }
   }
+}
 </script>
 
 <style scoped lang="less">

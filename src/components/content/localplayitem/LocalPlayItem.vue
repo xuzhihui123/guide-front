@@ -25,9 +25,9 @@
 </template>
 
 <script>
-  export default {
-    name: "LocalPlayItem"
-  }
+export default {
+  name: 'LocalPlayItem'
+}
 </script>
 
 <style scoped lang="less">
@@ -147,7 +147,6 @@
       > img {
         height: 3.8rem;
       }
-
 
     }
   }

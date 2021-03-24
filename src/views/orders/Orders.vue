@@ -70,12 +70,10 @@
       </div>
     </div>
 
-
     <div class="empty-show" v-show="ifShowEmpty">
       <img src="~assets/main-logo.png" alt="">
       <span>暂无新的订单信息哦~</span>
     </div>
-
 
     <van-dialog v-model="isShowOpinion" title="订单意见" @confirm="submitFinishOrder">
       <van-field v-model="opinionText" placeholder="请输入您宝贵的意见"/>
@@ -84,177 +82,175 @@
 </template>
 
 <script>
-  import {mapMutations, mapState} from 'vuex'
+import { mapMutations, mapState } from 'vuex'
 
+import { userPay, orderOpinion } from 'network/order'
+// 导入组件
 
-  import {userPay, orderOpinion} from "network/order";
-  //导入组件
-
-  export default {
-    name: "Orders",
-    components: {},
-    data() {
-      return {
-        ifShowEmpty: false,
-        isShowGuide: false,
-        isShowOpinion: false,
-        opinionText: '',
-        userData: {},
+export default {
+  name: 'Orders',
+  components: {},
+  data () {
+    return {
+      ifShowEmpty: false,
+      isShowGuide: false,
+      isShowOpinion: false,
+      opinionText: '',
+      userData: {}
+    }
+  },
+  computed: {
+    ...mapState(['orderObj', 'userIsPay', 'userIsCancel'])
+  },
+  watch: {
+    orderObj: {
+      immediate: true,
+      handler (newValue) {
+        if (!newValue.userModel) {
+          this.ifShowEmpty = true
+        } else {
+          this.ifShowEmpty = false
+        }
       }
     },
-    computed: {
-      ...mapState(['orderObj', 'userIsPay','userIsCancel'])
-    },
-    watch: {
-      orderObj: {
-        immediate: true,
-        handler(newValue) {
-          if (!newValue.userModel) {
-            this.ifShowEmpty = true
-          } else {
-            this.ifShowEmpty = false
-          }
-        }
-      },
-      userIsPay: {
-        immediate: true,
-        handler(newValue) {
-          if (newValue === true) {
-            this.$toast({
-              message: '用户已付款，订单完成！',
-              type: 'success'
-            })
-            localStorage.removeItem('orders')
-            let d = JSON.parse(localStorage.getItem('receiveFlag'))
-            d.flag = false
-            //设置导游可以继续接单
-            localStorage.setItem('receiveFlag', JSON.stringify(d))
-            this.$store.commit('changeReceiveFlag', false)
-            this.changeOrderObj({})
-            //重新设置
-            this.$store.commit('changeUserIsPay', false)
-            this.getData()
-          }
-        }
-      },
-      userIsCancel:{
-        immediate:true,
-        handler(newValue){
-          if (newValue === true) {
-            this.$toast({
-              message: '用户已取消订单！',
-              type: 'success'
-            })
-            localStorage.removeItem('orders')
-            let d = JSON.parse(localStorage.getItem('receiveFlag'))
-            d.flag = false
-            //设置导游可以继续接单
-            localStorage.setItem('receiveFlag', JSON.stringify(d))
-            this.$store.commit('changeReceiveFlag', false)
-            this.changeOrderObj({})
-            //重新设置
-            this.$store.commit('changeUserCancel', false)
-            this.getData()
-          }
-        }
-      }
-
-    },
-    methods: {
-      ...mapMutations(['changeTabBarShow', 'changeOrderObj']),
-
-      //获取vuex保存的信息
-      getData() {
-        let data = JSON.parse(localStorage.getItem('userInfo') || "{}").is_guide
-        //如果是导游
-        if (data) {
-          this.isShowGuide = true
-        } else {
-          this.isShowGuide = false
-        }
-        this.userData.orderDst = this.orderObj.orderDst || ''
-        this.userData.detailedLocation = this.orderObj.detailedLocation || ''
-        this.userData.orderStatus = this.orderObj.orderStatus || ''
-        this.userData.orderFrom = this.orderObj.orderFrom || ''
-        this.userData.orderPrice = this.orderObj.orderPrice || ''
-        if (this.orderObj.userModel) {
-          this.userData.user_nick = this.orderObj.userModel.user_nick
-          this.userData.user_avatar = this.orderObj.userModel.user_avatar
-          this.userData.user_phone = this.orderObj.userModel.user_phone
-          this.userData.user_id = this.orderObj.userModel.user_id
-          this.userData.guide_trueName = this.orderObj.guideModel.guide_trueName
-          this.userData.guide_phone = this.orderObj.guideModel.guide_phone
-          this.userData.guide_id = this.orderObj.guideModel.guide_id
-          this.userData.guide_avatar = this.orderObj.guideModel.guide_avatar
-        } else {
-          this.userData.user_nick = ''
-          this.userData.user_phone = ''
-          this.userData.user_avatar = ''
-          this.userData.guide_trueName = ''
-          this.userData.guide_phone = ''
-          this.userData.guide_avatar = ''
-        }
-      },
-
-      //用户付款订单完成
-      userPay() {
-        let user_id = this.userData.user_id
-        this.$dialog.confirm({
-          title: '提示',
-          message: '测试阶段，不调用详细付款接口，确认此订单吗？'
-        }).then(async () => {
-          try {
-            let d = await userPay(user_id)
-            if (d.status.code === '200') {
-              this.$toast({
-                message: '付款成功拉！',
-                type: 'success'
-              })
-              setTimeout(() => {
-                this.isShowOpinion = true
-              }, 1000)
-            }
-          } catch (e) {
-            this.$toast({
-              message: '服务器错误！',
-              type: 'fail'
-            })
-          }
-        }).catch(() => {
-          // on cancel
+    userIsPay: {
+      immediate: true,
+      handler (newValue) {
+        if (newValue === true) {
           this.$toast({
-            message: '您已取消付款！',
-            type: 'success'
-          })
-        });
-      },
-
-      //完成意见  订单保存数据库
-      async submitFinishOrder() {
-        let d = await orderOpinion({user_id: this.userData.user_id, opinion: this.opinionText})
-        if (d.code === '200') {
-          this.$toast({
-            message: '提交成功！寻导感谢您的到来',
+            message: '用户已付款，订单完成！',
             type: 'success'
           })
           localStorage.removeItem('orders')
+          const d = JSON.parse(localStorage.getItem('receiveFlag'))
+          d.flag = false
+          // 设置导游可以继续接单
+          localStorage.setItem('receiveFlag', JSON.stringify(d))
+          this.$store.commit('changeReceiveFlag', false)
           this.changeOrderObj({})
+          // 重新设置
+          this.$store.commit('changeUserIsPay', false)
           this.getData()
         }
-      },
-
-
-      //goOrderDetails  去订单详情页
-      goOrderDetails(){
-        this.$router.push('/orderDetails')
       }
+    },
+    userIsCancel: {
+      immediate: true,
+      handler (newValue) {
+        if (newValue === true) {
+          this.$toast({
+            message: '用户已取消订单！',
+            type: 'success'
+          })
+          localStorage.removeItem('orders')
+          const d = JSON.parse(localStorage.getItem('receiveFlag'))
+          d.flag = false
+          // 设置导游可以继续接单
+          localStorage.setItem('receiveFlag', JSON.stringify(d))
+          this.$store.commit('changeReceiveFlag', false)
+          this.changeOrderObj({})
+          // 重新设置
+          this.$store.commit('changeUserCancel', false)
+          this.getData()
+        }
+      }
+    }
 
+  },
+  methods: {
+    ...mapMutations(['changeTabBarShow', 'changeOrderObj']),
+
+    // 获取vuex保存的信息
+    getData () {
+      const data = JSON.parse(localStorage.getItem('userInfo') || '{}').is_guide
+      // 如果是导游
+      if (data) {
+        this.isShowGuide = true
+      } else {
+        this.isShowGuide = false
+      }
+      this.userData.orderDst = this.orderObj.orderDst || ''
+      this.userData.detailedLocation = this.orderObj.detailedLocation || ''
+      this.userData.orderStatus = this.orderObj.orderStatus || ''
+      this.userData.orderFrom = this.orderObj.orderFrom || ''
+      this.userData.orderPrice = this.orderObj.orderPrice || ''
+      if (this.orderObj.userModel) {
+        this.userData.user_nick = this.orderObj.userModel.user_nick
+        this.userData.user_avatar = this.orderObj.userModel.user_avatar
+        this.userData.user_phone = this.orderObj.userModel.user_phone
+        this.userData.user_id = this.orderObj.userModel.user_id
+        this.userData.guide_trueName = this.orderObj.guideModel.guide_trueName
+        this.userData.guide_phone = this.orderObj.guideModel.guide_phone
+        this.userData.guide_id = this.orderObj.guideModel.guide_id
+        this.userData.guide_avatar = this.orderObj.guideModel.guide_avatar
+      } else {
+        this.userData.user_nick = ''
+        this.userData.user_phone = ''
+        this.userData.user_avatar = ''
+        this.userData.guide_trueName = ''
+        this.userData.guide_phone = ''
+        this.userData.guide_avatar = ''
+      }
     },
-    created() {
-      this.changeTabBarShow(true)
-      this.getData()
+
+    // 用户付款订单完成
+    userPay () {
+      const user_id = this.userData.user_id
+      this.$dialog.confirm({
+        title: '提示',
+        message: '测试阶段，不调用详细付款接口，确认此订单吗？'
+      }).then(async () => {
+        try {
+          const d = await userPay(user_id)
+          if (d.status.code === '200') {
+            this.$toast({
+              message: '付款成功拉！',
+              type: 'success'
+            })
+            setTimeout(() => {
+              this.isShowOpinion = true
+            }, 1000)
+          }
+        } catch (e) {
+          this.$toast({
+            message: '服务器错误！',
+            type: 'fail'
+          })
+        }
+      }).catch(() => {
+        // on cancel
+        this.$toast({
+          message: '您已取消付款！',
+          type: 'success'
+        })
+      })
     },
+
+    // 完成意见  订单保存数据库
+    async submitFinishOrder () {
+      const d = await orderOpinion({ user_id: this.userData.user_id, opinion: this.opinionText })
+      if (d.code === '200') {
+        this.$toast({
+          message: '提交成功！寻导感谢您的到来',
+          type: 'success'
+        })
+        localStorage.removeItem('orders')
+        this.changeOrderObj({})
+        this.getData()
+      }
+    },
+
+    // goOrderDetails  去订单详情页
+    goOrderDetails () {
+      this.$router.push('/orderDetails')
+    }
+
+  },
+  created () {
+    this.changeTabBarShow(true)
+    this.getData()
   }
+}
 </script>
 
 <style scoped lang="less">

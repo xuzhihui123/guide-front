@@ -21,15 +21,15 @@
 </template>
 
 <script>
-  import LocalPlayItem from "content/localplayitem/LocalPlayItem";
+import LocalPlayItem from 'content/localplayitem/LocalPlayItem'
 
-  export default {
-    name: "LocalPlay",
-    components: {
-      LocalPlayItem
-    },
-    methods: {}
-  }
+export default {
+  name: 'LocalPlay',
+  components: {
+    LocalPlayItem
+  },
+  methods: {}
+}
 </script>
 
 <style scoped lang="less">

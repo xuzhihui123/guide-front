@@ -1,69 +1,57 @@
-/*
- * @Author: Lancer
- * @Date:2020/2/14
- * @Last Modified by:   Lancer
- * @Last Modified time: 2020/2/14
- */
+import { request } from './request'
+import Qs from 'qs'
 
-
-import {request} from "network/request";
-import Qs from "qs";
-
-
-//获取所有问题
-export function getAllRequesitons() {
-    return request({
-      method:'get',
-      url:'/getQuestionDTOs'
-    })
+// 获取所有问题
+export function getAllRequesitons () {
+  return request({
+    method: 'get',
+    url: '/getQuestionDTOs'
+  })
 }
 
-//根据问题id获取该问题的所有信息
-export function getQuestionById(questionId) {
+// 根据问题id获取该问题的所有信息
+export function getQuestionById (questionId) {
   return request({
-    method:'get',
-    url:'/getQuestionById',
-    params:{
+    method: 'get',
+    url: '/getQuestionById',
+    params: {
       questionId
     }
   })
 }
 
-
-//发表评论
-export function postComment(data) {
+// 发表评论
+export function postComment (data) {
   return request({
-    method:'post',
-    url:'/insertComment',
+    method: 'post',
+    url: '/insertComment',
     data,
-    transformRequest:[function (data) {
+    transformRequest: [function (data) {
       data = Qs.stringify(data)
       return data
     }],
-    headers:{'Content-Type':'application/x-www-form-urlencoded'}
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
   })
 }
 
-
-//根据问题点赞
-export function insertQuestionDz(questionId) {
+// 根据问题点赞
+export function insertQuestionDz (questionId) {
   return request({
-    method:'get',
-    url:'/incQuestionLike',
-    params:{
+    method: 'get',
+    url: '/incQuestionLike',
+    params: {
       questionId
     }
   })
 }
 
+// 发布问题
 
-//发布问题
-
-export function postQuestion(data) {
+export function postQuestion (data) {
   return request({
-    method:'post',
-    url:'/publishQuestion',
+    method: 'post',
+    url: '/publishQuestion',
     data,
-    headers:{"Content-Type": "multipart/form-data"}
+    headers: { 'Content-Type': 'multipart/form-data' }
   })
 }

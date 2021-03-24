@@ -3,89 +3,63 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
-Vue.prototype.$bus = new Vue()
-
-Vue.config.productionTip = false
-
-
-
-//引入百度地图组件
+// 引入百度地图组件
 import BaiduMap from 'vue-baidu-map'
-
-Vue.use(BaiduMap, {
-  ak: 'vgrSAB4UtprjZHvfPP9yxpLfR73IqysG'
-})
-
-
 
 import 'assets/css/common.css'
 import 'animate.css'
 import 'assets/css/iconfont.css'
 
-import {Tabbar, TabbarItem} from 'vant';
+import { Tabbar, TabbarItem, Icon, Toast, ActionSheet, Uploader, Notify, Field, Cell, CellGroup, Popup, NavBar, NoticeBar, Dialog, Overlay } from 'vant'
 
-Vue.use(Tabbar).use(TabbarItem);
-import {Icon} from 'vant';
+import moment from 'moment'
 
-Vue.use(Icon);
-import {Toast} from 'vant';
+Vue.prototype.$bus = new Vue()
 
-Vue.use(Toast);
-import {ActionSheet} from 'vant';
+Vue.config.productionTip = false
 
-Vue.use(ActionSheet);
-import {Uploader} from 'vant';
+Vue.use(BaiduMap, {
+  ak: 'vgrSAB4UtprjZHvfPP9yxpLfR73IqysG'
+})
 
-Vue.use(Uploader);
+Vue.use(Tabbar).use(TabbarItem)
 
-import { Notify } from 'vant';
+Vue.use(Icon)
 
-Vue.use(Notify);
+Vue.use(Toast)
 
-import { Field } from 'vant';
+Vue.use(ActionSheet)
 
-Vue.use(Field);
-import { Cell, CellGroup } from 'vant';
+Vue.use(Uploader)
 
-import { Popup } from 'vant';
+Vue.use(Notify)
 
-Vue.use(Popup);
+Vue.use(Field)
 
-import { NavBar } from 'vant';
+Vue.use(Popup)
 
-Vue.use(NavBar);
+Vue.use(NavBar)
 
+Vue.use(NoticeBar)
 
-import { NoticeBar } from 'vant';
-
-Vue.use(NoticeBar);
-
-Vue.use(Cell).use(CellGroup);
-
-import { Dialog } from 'vant';
+Vue.use(Cell).use(CellGroup)
 
 // 全局注册
-Vue.use(Dialog);
+Vue.use(Dialog)
 
-import { Overlay } from 'vant';
-import moment from "moment";
-
-Vue.use(Overlay);
-
+Vue.use(Overlay)
 
 Vue.directive('focus', {
 // 当被绑定的元素插入到 DOM 中时……
   inserted: function (el) {
-// 聚焦元素
+    // 聚焦元素
     el.focus()
   }
 })
 
-
-Vue.filter('dateFormat',(str,data="YYYY-MM-DD")=>{
+Vue.filter('dateFormat', (str, data = 'YYYY-MM-DD') => {
   return moment(str).format(data)
 })
-
 
 new Vue({
   router,

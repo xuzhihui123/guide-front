@@ -9,66 +9,66 @@
 </template>
 
 <script>
-import "swiper/dist/css/swiper.css";
-import { swiper, swiperSlide } from "vue-awesome-swiper";
+import 'swiper/dist/css/swiper.css'
+import { swiper, swiperSlide } from 'vue-awesome-swiper'
 
-let vm = null;
+let vm = null
 export default {
-  name:'Swiper',
+  name: 'Swiper',
   components: {
     swiper,
     swiperSlide
   },
-  data() {
+  data () {
     return {
       index: null,
       swiperOption: {
         loop: true,
         pagination: {
-          el: ".swiper-pagination",
-          //type: 'fraction',
-          //type : 'progressbar',
-          //type : 'custom',
+          el: '.swiper-pagination'
+          // type: 'fraction',
+          // type : 'progressbar',
+          // type : 'custom',
         },
-        observer:true,
-        //每张播放时长3秒，自动播放
+        observer: true,
+        // 每张播放时长3秒，自动播放
         autoplay: {
           delay: 2000,
-          disableOnInteraction:false
+          disableOnInteraction: false
         },
-        //滑动速度
+        // 滑动速度
         speed: 1000,
         // delay:1000
         on: {
-          //切换到下一张的事件
-          slideChange() {
-            vm.index = this.activeIndex;
+          // 切换到下一张的事件
+          slideChange () {
+            vm.index = this.activeIndex
           }
         }
-      },
-    };
+      }
+    }
   },
   methods: {
 
   },
   props: {
-    //传过来的轮播数据
+    // 传过来的轮播数据
     viewList: {
       type: Array,
-      default() {
-        return [];
+      default () {
+        return []
       }
     }
   },
   computed: {
-    swiper() {
-      return this.$refs.mySwiper.swiper;
+    swiper () {
+      return this.$refs.mySwiper.swiper
     }
   },
-  created() {
-    vm = this;
+  created () {
+    vm = this
   }
-};
+}
 </script>
 <style lang='less' scoped>
 img {

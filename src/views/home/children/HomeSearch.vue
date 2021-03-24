@@ -13,19 +13,19 @@
 </template>
 
 <script>
-  export default {
-    name: "HomeSearch",
-    data(){
-      return {
-        searchText:'搜索目的地/向导/玩法'
-      }
-    },
-    methods:{
-      searchFocus(){
-          this.$router.push('/search')
-      }
+export default {
+  name: 'HomeSearch',
+  data () {
+    return {
+      searchText: '搜索目的地/向导/玩法'
+    }
+  },
+  methods: {
+    searchFocus () {
+      this.$router.push('/search')
     }
   }
+}
 </script>
 
 <style scoped lang="less">

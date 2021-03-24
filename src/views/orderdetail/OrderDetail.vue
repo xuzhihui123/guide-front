@@ -117,211 +117,211 @@
 </template>
 
 <script>
-  import {mapState, mapMutations} from 'vuex'
-  import BScroll from 'common/bscroll/BScroll'
+import { mapState, mapMutations } from 'vuex'
+import BScroll from 'common/bscroll/BScroll'
 
-  import {userPay, orderOpinion,orderFinish} from "network/order";
+import { userPay, orderOpinion, orderFinish } from 'network/order'
 
-  export default {
-    name: "OrderDetail",
-    data() {
-      return {
-        userData: {},
-        isShowGuide: false,
-        isShowOpinion:false,
-        isShowCancel:false,
-        cancelText:'',
-        opinionText:'',
-        holder:''
+export default {
+  name: 'OrderDetail',
+  data () {
+    return {
+      userData: {},
+      isShowGuide: false,
+      isShowOpinion: false,
+      isShowCancel: false,
+      cancelText: '',
+      opinionText: '',
+      holder: ''
     }
-    },
-    watch: {
-      userIsPay: {
-        immediate: true,
-        handler(newValue) {
-          if (newValue === true) {
-            this.$toast({
-              message: '用户已付款，订单完成！',
-              type: 'success'
-            })
-            localStorage.removeItem('orders')
-            let d = JSON.parse(localStorage.getItem('receiveFlag'))
-            d.flag = false
-            //设置导游可以继续接单
-            localStorage.setItem('receiveFlag', JSON.stringify(d))
-            this.$store.commit('changeReceiveFlag', false)
-            this.changeOrderObj({})
-            //重新设置
-            this.$store.commit('changeUserIsPay', false)
-            this.$router.go(-1)
-          }
-        }
-      },
-      userIsCancel:{
-        immediate:true,
-        handler(newValue){
-          if (newValue === true) {
-            this.$toast({
-              message: '用户已取消订单！',
-              type: 'success'
-            })
-            localStorage.removeItem('orders')
-            let d = JSON.parse(localStorage.getItem('receiveFlag'))
-            d.flag = false
-            //设置导游可以继续接单
-            localStorage.setItem('receiveFlag', JSON.stringify(d))
-            this.$store.commit('changeReceiveFlag', false)
-            this.changeOrderObj({})
-            //重新设置
-            this.$store.commit('changeUserCancel', false)
-            //返回订单页面
-            this.$router.go(-1)
-          }
+  },
+  watch: {
+    userIsPay: {
+      immediate: true,
+      handler (newValue) {
+        if (newValue === true) {
+          this.$toast({
+            message: '用户已付款，订单完成！',
+            type: 'success'
+          })
+          localStorage.removeItem('orders')
+          const d = JSON.parse(localStorage.getItem('receiveFlag'))
+          d.flag = false
+          // 设置导游可以继续接单
+          localStorage.setItem('receiveFlag', JSON.stringify(d))
+          this.$store.commit('changeReceiveFlag', false)
+          this.changeOrderObj({})
+          // 重新设置
+          this.$store.commit('changeUserIsPay', false)
+          this.$router.go(-1)
         }
       }
     },
-    components: {
-      BScroll
-    },
-    computed: {
-      ...mapState(['orderObj', 'userIsPay','userIsCancel'])
-    },
-    methods: {
-      ...mapMutations(['changeTabBarShow','changeOrderObj']),
-      //获取vuex保存的信息
-      getData() {
-        let data = JSON.parse(localStorage.getItem('userInfo')).is_guide
-        if (data) {
-          this.isShowGuide = true
+    userIsCancel: {
+      immediate: true,
+      handler (newValue) {
+        if (newValue === true) {
           this.$toast({
-            message: '订单已生成~赶紧联系客户吧',
+            message: '用户已取消订单！',
             type: 'success'
           })
-        } else {
-          this.isShowGuide = false
-          this.$toast({
-            message: '订单已生成~请保持电话通畅哦',
-            type: 'success'
-          })
+          localStorage.removeItem('orders')
+          const d = JSON.parse(localStorage.getItem('receiveFlag'))
+          d.flag = false
+          // 设置导游可以继续接单
+          localStorage.setItem('receiveFlag', JSON.stringify(d))
+          this.$store.commit('changeReceiveFlag', false)
+          this.changeOrderObj({})
+          // 重新设置
+          this.$store.commit('changeUserCancel', false)
+          // 返回订单页面
+          this.$router.go(-1)
         }
-        //如果是导游
-        this.userData.orderDst = this.orderObj.orderDst || ''
-        this.userData.detailedLocation = this.orderObj.detailedLocation || ''
-        this.userData.orderStatus = this.orderObj.orderStatus || ''
-        this.userData.orderFrom = this.orderObj.orderFrom || ''
-        this.userData.orderPrice = this.orderObj.orderPrice || ''
-        if (this.orderObj.userModel) {
-          this.userData.user_nick = this.orderObj.userModel.user_nick
-          this.userData.user_avatar = this.orderObj.userModel.user_avatar
-          this.userData.user_phone = this.orderObj.userModel.user_phone
-          this.userData.user_id = this.orderObj.userModel.user_id
-          this.userData.user_sex = this.orderObj.userModel.user_sex
-          this.userData.guide_trueName = this.orderObj.guideModel.guide_trueName
-          this.userData.guide_phone = this.orderObj.guideModel.guide_phone
-          this.userData.guide_id = this.orderObj.guideModel.guide_id
-          this.userData.guide_avatar = this.orderObj.guideModel.guide_avatar
-          this.userData.guide_nick = this.orderObj.guideModel.guide_nick
-          this.userData.guide_sex = this.orderObj.guideModel.guide_sex
-        } else {
-          this.userData.user_nick = ''
-          this.userData.user_phone = ''
-          this.userData.user_avatar = ''
-          this.userData.user_sex = ''
-          this.userData.guide_trueName = ''
-          this.userData.guide_phone = ''
-          this.userData.guide_avatar = ''
-          this.userData.guide_nick = ''
-          this.userData.guide_sex = ''
-        }
-      },
+      }
+    }
+  },
+  components: {
+    BScroll
+  },
+  computed: {
+    ...mapState(['orderObj', 'userIsPay', 'userIsCancel'])
+  },
+  methods: {
+    ...mapMutations(['changeTabBarShow', 'changeOrderObj']),
+    // 获取vuex保存的信息
+    getData () {
+      const data = JSON.parse(localStorage.getItem('userInfo')).is_guide
+      if (data) {
+        this.isShowGuide = true
+        this.$toast({
+          message: '订单已生成~赶紧联系客户吧',
+          type: 'success'
+        })
+      } else {
+        this.isShowGuide = false
+        this.$toast({
+          message: '订单已生成~请保持电话通畅哦',
+          type: 'success'
+        })
+      }
+      // 如果是导游
+      this.userData.orderDst = this.orderObj.orderDst || ''
+      this.userData.detailedLocation = this.orderObj.detailedLocation || ''
+      this.userData.orderStatus = this.orderObj.orderStatus || ''
+      this.userData.orderFrom = this.orderObj.orderFrom || ''
+      this.userData.orderPrice = this.orderObj.orderPrice || ''
+      if (this.orderObj.userModel) {
+        this.userData.user_nick = this.orderObj.userModel.user_nick
+        this.userData.user_avatar = this.orderObj.userModel.user_avatar
+        this.userData.user_phone = this.orderObj.userModel.user_phone
+        this.userData.user_id = this.orderObj.userModel.user_id
+        this.userData.user_sex = this.orderObj.userModel.user_sex
+        this.userData.guide_trueName = this.orderObj.guideModel.guide_trueName
+        this.userData.guide_phone = this.orderObj.guideModel.guide_phone
+        this.userData.guide_id = this.orderObj.guideModel.guide_id
+        this.userData.guide_avatar = this.orderObj.guideModel.guide_avatar
+        this.userData.guide_nick = this.orderObj.guideModel.guide_nick
+        this.userData.guide_sex = this.orderObj.guideModel.guide_sex
+      } else {
+        this.userData.user_nick = ''
+        this.userData.user_phone = ''
+        this.userData.user_avatar = ''
+        this.userData.user_sex = ''
+        this.userData.guide_trueName = ''
+        this.userData.guide_phone = ''
+        this.userData.guide_avatar = ''
+        this.userData.guide_nick = ''
+        this.userData.guide_sex = ''
+      }
+    },
 
-      //返回
-      goBack() {
+    // 返回
+    goBack () {
+      this.$router.go(-1)
+    },
+
+    // 用户付款
+    userPay () {
+      const user_id = this.userData.user_id
+      this.$dialog.confirm({
+        title: '提示',
+        message: '测试阶段，不调用详细付款接口，确认此订单吗？'
+      }).then(async () => {
+        try {
+          const d = await userPay(user_id)
+          if (d.status.code === '200') {
+            this.$toast({
+              message: '付款成功拉！',
+              type: 'success'
+            })
+            setTimeout(() => {
+              this.isShowOpinion = true
+              this.holder = '请输入您宝贵的意见'
+            }, 1000)
+          }
+        } catch (e) {
+          this.$toast({
+            message: '服务器错误！',
+            type: 'fail'
+          })
+        }
+      }).catch(() => {
+        // on cancel
+        this.$toast({
+          message: '您已取消付款！',
+          type: 'success'
+        })
+      })
+    },
+
+    // 取消订单
+    async cancelOrder () {
+      this.$dialog.confirm({
+        title: '提示',
+        message: '确认要取消订单吗'
+      }).then(() => {
+        // 显示取消原因框
+        this.isShowCancel = true
+      }).catch(() => {
+
+      })
+    },
+
+    // 完成意见  订单保存数据库
+    async submitFinishOrder () {
+      const d = await orderOpinion({ user_id: this.userData.user_id, opinion: this.opinionText })
+      if (d.code === '200') {
+        this.$toast({
+          message: '提交成功！寻导感谢您的到来',
+          type: 'success'
+        })
+        localStorage.removeItem('orders')
+        this.changeOrderObj({})
         this.$router.go(-1)
-      },
-
-      //用户付款
-      userPay() {
-        let user_id = this.userData.user_id
-        this.$dialog.confirm({
-          title: '提示',
-          message: '测试阶段，不调用详细付款接口，确认此订单吗？'
-        }).then(async () => {
-          try {
-            let d = await userPay(user_id)
-            if (d.status.code === '200') {
-              this.$toast({
-                message: '付款成功拉！',
-                type: 'success'
-              })
-              setTimeout(() => {
-                this.isShowOpinion = true
-                this.holder = '请输入您宝贵的意见'
-              }, 1000)
-            }
-          } catch (e) {
-            this.$toast({
-              message: '服务器错误！',
-              type: 'fail'
-            })
-          }
-        }).catch(() => {
-          // on cancel
-          this.$toast({
-            message: '您已取消付款！',
-            type: 'success'
-          })
-        });
-      },
-
-      //取消订单
-      async cancelOrder(){
-          this.$dialog.confirm({
-            title:'提示',
-            message:'确认要取消订单吗'
-          }).then(()=>{
-            //显示取消原因框
-            this.isShowCancel=true
-          }).catch(()=>{
-
-          })
-      },
-
-      //完成意见  订单保存数据库
-      async submitFinishOrder() {
-        let d = await orderOpinion({user_id: this.userData.user_id, opinion: this.opinionText})
-        if (d.code === '200') {
-          this.$toast({
-            message: '提交成功！寻导感谢您的到来',
-            type: 'success'
-          })
-          localStorage.removeItem('orders')
-          this.changeOrderObj({})
-          this.$router.go(-1)
-        }
-      },
-
-      async submitCancelOrder(){
-        let d= await orderFinish({user_id:this.userData.user_id,cause:this.cancelText})
-        if (d.status.code === '200') {
-          this.$toast({
-            message: '取消成功！寻导欢迎您的下次到来！',
-            type: 'success'
-          })
-          localStorage.removeItem('orders')
-          this.changeOrderObj({})
-          this.$router.go(-1)
-        }
       }
     },
-    created() {
-      this.changeTabBarShow(false)
-      this.getData()
-    },
-    destroyed() {
-      this.changeTabBarShow(true)
+
+    async submitCancelOrder () {
+      const d = await orderFinish({ user_id: this.userData.user_id, cause: this.cancelText })
+      if (d.status.code === '200') {
+        this.$toast({
+          message: '取消成功！寻导欢迎您的下次到来！',
+          type: 'success'
+        })
+        localStorage.removeItem('orders')
+        this.changeOrderObj({})
+        this.$router.go(-1)
+      }
     }
+  },
+  created () {
+    this.changeTabBarShow(false)
+    this.getData()
+  },
+  destroyed () {
+    this.changeTabBarShow(true)
   }
+}
 </script>
 
 <style scoped lang="less">

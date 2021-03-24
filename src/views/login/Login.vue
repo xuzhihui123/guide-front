@@ -9,7 +9,6 @@
 
     <login-logo/>
 
-
     <!--    登录表单-->
     <div class="form">
       <!--        账号-->
@@ -41,164 +40,161 @@
 </template>
 
 <script>
-  //引入vuex的方法
-  import {mapMutations} from 'vuex'
+// 引入vuex的方法
+import { mapMutations } from 'vuex'
 
-  //引入组件
-  import  LoginLogo from 'content/loginlogo/LoginLogo'
+// 引入组件
+import LoginLogo from 'content/loginlogo/LoginLogo'
 
-  //引入network
-  import {loginForm,guideLogin} from "network/login";
-  import {getOngoingOrder} from 'network/order'
+// 引入network
+import { loginForm, guideLogin } from 'network/login'
+import { getOngoingOrder } from 'network/order'
 
-  export default {
-    name: "Login",
-    methods: {
-      ...mapMutations(['changeTabBarShow']),
-      goBack() {
-        this.$router.push('/home')
-      },
-      changeIcon() {
-        this.clickInputIcon.userName.inactive = require('assets/login-user-icon-active.svg')
-      },
-      changeIconT() {
-        this.clickInputIcon.passWord.inactive = require('assets/login-user-lock-active.svg')
-      },
-      changeIconU() {
-        this.clickInputIcon.userName.inactive = require('assets/login-user-icon.svg')
-      },
-      changeIconTu() {
-        this.clickInputIcon.passWord.inactive = require('assets/login-user-lock.svg')
-      },
+export default {
+  name: 'Login',
+  methods: {
+    ...mapMutations(['changeTabBarShow']),
+    goBack () {
+      this.$router.push('/home')
+    },
+    changeIcon () {
+      this.clickInputIcon.userName.inactive = require('assets/login-user-icon-active.svg')
+    },
+    changeIconT () {
+      this.clickInputIcon.passWord.inactive = require('assets/login-user-lock-active.svg')
+    },
+    changeIconU () {
+      this.clickInputIcon.userName.inactive = require('assets/login-user-icon.svg')
+    },
+    changeIconTu () {
+      this.clickInputIcon.passWord.inactive = require('assets/login-user-lock.svg')
+    },
 
-      goRegis(){
-        this.hidenRegister=true
-      },
-      onSelectRegis(item){
-        //传入0是进入导游  传入1是进入用户
-          this.$router.push(`/register/${item.flag}`)
-          this.hidenRegister = false
-      },
+    goRegis () {
+      this.hidenRegister = true
+    },
+    onSelectRegis (item) {
+      // 传入0是进入导游  传入1是进入用户
+      this.$router.push(`/register/${item.flag}`)
+      this.hidenRegister = false
+    },
 
+    // 用户的请求方法
+    userLoginMethod () {
+      return loginForm({
+        userName: this.userName,
+        userPassWord: this.passWord
+      })
+    },
 
-      //用户的请求方法
-      userLoginMethod(){
-        return loginForm({
-          userName:this.userName,
-          userPassWord:this.passWord})
-      },
+    // 导游得请求方法
+    guideLoginMethod () {
+      return guideLogin({
+        guideName: this.userName,
+        guidePassWord: this.passWord
+      })
+    },
 
-      //导游得请求方法
-      guideLoginMethod(){
-       return guideLogin({
-          guideName:this.userName,
-          guidePassWord:this.passWord})
-      },
+    // 登录点击
+    goLogin () {
+      Promise.all([this.userLoginMethod(), this.guideLoginMethod()]).then(r => {
+        const [user, guide] = r
+        // 如果都没有返回错误
+        if ((!user.data) && (!guide.data)) {
+          return this.$toast({
+            type: 'fail',
+            message: '账号或密码错误！',
+            icon: 'cross',
+            duration: 1500
+          })
+        }
+        // 如果用户登录成功
+        if (user.data && (!guide.data)) {
+          this.$toast({
+            type: 'success',
+            message: '登录成功!',
+            duration: 1500
+          })
+          // //登录成功保存 localstorage
+          const { user_avatar, user_name, user_nick, user_phone, user_id } = user.data
+          const userData = { user_avatar, user_name, user_nick, user_phone, user_id }
+          localStorage.setItem('userInfo', JSON.stringify(userData))
 
-      //登录点击
-      goLogin(){
-          Promise.all([this.userLoginMethod(),this.guideLoginMethod()]).then(r=>{
-            let [user,guide] = r
-            //如果都没有返回错误
-            if((!user.data) && (!guide.data)){
-                  return this.$toast({
-                    type: 'fail',
-                    message: '账号或密码错误！',
-                    icon: 'cross',
-                    duration: 1500
-                  })
-            }
-            // 如果用户登录成功
-            if(user.data && (!guide.data)){
-                  this.$toast({
-                    type: 'success',
-                    message: '登录成功!',
-                    duration: 1500
-                  })
-              // //登录成功保存 localstorage
-              let {user_avatar,user_name,user_nick,user_phone,user_id} = user.data
-              let userData = {user_avatar,user_name,user_nick,user_phone,user_id}
-              localStorage.setItem('userInfo',JSON.stringify(userData))
-
-              getOngoingOrder({guide_id:0,user_id}).then(r=>{
-                //表示有进行中的订单
-                if(r.code==='200'){
-                  this.$store.commit('changeOrderObj',r.msg[0])
-                  //设置储存
-                  localStorage.setItem('orders',JSON.stringify(r.msg[0]))
-                  this.$router.push('/profile')
-                }else{
-                  this.$router.push('/profile')
-                }
-
-              })
-
-              //页面跳转到 profile
-
-            }
-
-            //如果导游登录成功
-            if(guide.data && (!user.data)){
-                  this.$toast({
-                    type: 'success',
-                    message: '登录成功!',
-                    duration: 1500
-                  })
-              //登录成功保存 localstorage
-              let userData ={user_avatar:guide.data.guide_avatar, user_name:guide.data.guide_name, user_nick:guide.data.guide_nick, user_phone:guide.data.guide_phone, user_id:guide.data.guide_id,is_guide:'y'}
-              localStorage.setItem('userInfo',JSON.stringify(userData))
-              this.$store.commit('changeGuideId',guide.data.guide_id)
-
-
-              getOngoingOrder({guide_id:guide.data.guide_id,user_id:0}).then(r=>{
-                if(r.code==='200'){
-                  this.$store.commit('changeOrderObj',r.msg[0])
-                  //设置储存
-                  localStorage.setItem('orders',JSON.stringify(r.msg[0]))
-                  this.$store.commit('changeReceiveFlag',true)
-                  localStorage.setItem('receiveFlag',JSON.stringify({flag:true}))
-                  this.$router.push('/profile')
-                }else{
-                  localStorage.removeItem('receiveFlag')
-                  this.$store.commit('changeReceiveFlag',false)
-                  this.$router.push('/profile')
-                }
-              })
-              //页面跳转到 profile
+          getOngoingOrder({ guide_id: 0, user_id }).then(r => {
+            // 表示有进行中的订单
+            if (r.code === '200') {
+              this.$store.commit('changeOrderObj', r.msg[0])
+              // 设置储存
+              localStorage.setItem('orders', JSON.stringify(r.msg[0]))
+              this.$router.push('/profile')
+            } else {
+              this.$router.push('/profile')
             }
           })
-      }
-    },
-    data() {
-      return {
-        userName: '',
-        passWord: '',
-        clickInputIcon: {
-          userName: {
-            inactive: require('assets/login-user-icon.svg')
-          },
-          passWord: {
-            inactive: require('assets/login-user-lock.svg')
-          }
-        },
-        hidenRegister:false,
-        actions:[
-          {name:'我想成为导游',flag:0},
-          {name:'我想成为用户',flag:1}
-        ]
-      }
-    },
-    destroyed() {
-      this.changeTabBarShow(true)
-    },
-    created() {
-      this.changeTabBarShow(false)
 
-    },
-    components: {
-      LoginLogo
+          // 页面跳转到 profile
+        }
+
+        // 如果导游登录成功
+        if (guide.data && (!user.data)) {
+          this.$toast({
+            type: 'success',
+            message: '登录成功!',
+            duration: 1500
+          })
+          // 登录成功保存 localstorage
+          const userData = { user_avatar: guide.data.guide_avatar, user_name: guide.data.guide_name, user_nick: guide.data.guide_nick, user_phone: guide.data.guide_phone, user_id: guide.data.guide_id, is_guide: 'y' }
+          localStorage.setItem('userInfo', JSON.stringify(userData))
+          this.$store.commit('changeGuideId', guide.data.guide_id)
+
+          getOngoingOrder({ guide_id: guide.data.guide_id, user_id: 0 }).then(r => {
+            if (r.code === '200') {
+              this.$store.commit('changeOrderObj', r.msg[0])
+              // 设置储存
+              localStorage.setItem('orders', JSON.stringify(r.msg[0]))
+              this.$store.commit('changeReceiveFlag', true)
+              localStorage.setItem('receiveFlag', JSON.stringify({ flag: true }))
+              this.$router.push('/profile')
+            } else {
+              localStorage.removeItem('receiveFlag')
+              this.$store.commit('changeReceiveFlag', false)
+              this.$router.push('/profile')
+            }
+          })
+          // 页面跳转到 profile
+        }
+      })
     }
+  },
+  data () {
+    return {
+      userName: '',
+      passWord: '',
+      clickInputIcon: {
+        userName: {
+          inactive: require('assets/login-user-icon.svg')
+        },
+        passWord: {
+          inactive: require('assets/login-user-lock.svg')
+        }
+      },
+      hidenRegister: false,
+      actions: [
+        { name: '我想成为导游', flag: 0 },
+        { name: '我想成为用户', flag: 1 }
+      ]
+    }
+  },
+  destroyed () {
+    this.changeTabBarShow(true)
+  },
+  created () {
+    this.changeTabBarShow(false)
+  },
+  components: {
+    LoginLogo
   }
+}
 </script>
 
 <style scoped lang="less">
@@ -230,8 +226,6 @@
     }
 
   }
-
-
 
   .form {
     padding: 0 0.8rem;

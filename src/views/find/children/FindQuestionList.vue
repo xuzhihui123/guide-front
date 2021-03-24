@@ -5,21 +5,21 @@
 </template>
 
 <script>
-  import QuestionItem from "views/find/children/QuestionItem";
-  export default {
-    name: "FindQuestionList",
-    components:{
-      QuestionItem
-    },
-    props:{
-      questionList:{
-        type:Array,
-        default(){
-          return []
-        }
+import QuestionItem from 'views/find/children/QuestionItem'
+export default {
+  name: 'FindQuestionList',
+  components: {
+    QuestionItem
+  },
+  props: {
+    questionList: {
+      type: Array,
+      default () {
+        return []
       }
     }
   }
+}
 </script>
 
 <style scoped lang="less">

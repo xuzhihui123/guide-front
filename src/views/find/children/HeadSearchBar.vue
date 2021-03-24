@@ -10,14 +10,14 @@
 </template>
 
 <script>
-  export default {
-    name: "HeadSearchBar",
-    methods:{
-      goPostRequestion(){
-        this.$router.push('/postRequestions')
-      }
+export default {
+  name: 'HeadSearchBar',
+  methods: {
+    goPostRequestion () {
+      this.$router.push('/postRequestions')
     }
   }
+}
 </script>
 
 <style scoped lang="less">

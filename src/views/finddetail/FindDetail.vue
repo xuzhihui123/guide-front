@@ -67,116 +67,113 @@
 </template>
 
 <script>
-  import {mapMutations} from 'vuex'
-  import HeaderBar from "views/finddetail/children/HeaderBar";
-  import BottomControlBar from "views/finddetail/children/BottomControlBar";
+import { mapMutations } from 'vuex'
+import HeaderBar from 'views/finddetail/children/HeaderBar'
+import BottomControlBar from 'views/finddetail/children/BottomControlBar'
 
-  //导入network
-  import {getQuestionById, postComment} from 'network/find'
-  import BScroll from 'common/bscroll/BScroll'
+// 导入network
+import { getQuestionById, postComment } from 'network/find'
+import BScroll from 'common/bscroll/BScroll'
 
-  export default {
-    name: "FindDetail",
-    components: {
-      HeaderBar,
-      BottomControlBar,
-      BScroll
+export default {
+  name: 'FindDetail',
+  components: {
+    HeaderBar,
+    BottomControlBar,
+    BScroll
+  },
+  data () {
+    return {
+      questionData: {},
+      userInfo: {},
+      comments: [],
+      showCommentEdit: false,
+      commentValue: '',
+      showCommentDiv: true,
+      imgList: []
+    }
+  },
+  methods: {
+    ...mapMutations(['changeTabBarShow']),
+    // 根据问题id获取该问题的所有信息
+    async getQuestionById () {
+      const d = await getQuestionById(this.$route.params.id)
+      this.questionData = d.question
+      this.userInfo = d.creator
+      this.comments = d.comments
+      this.imgList = d.img
     },
-    data() {
-      return {
-        questionData: {},
-        userInfo: {},
-        comments: [],
-        showCommentEdit: false,
-        commentValue: '',
-        showCommentDiv: true,
-        imgList: []
+
+    // 图片加载
+    imgLoad () {
+      this.$refs.bscroll.refresh()
+    },
+
+    // 显示和隐藏评论表单
+    isShowCommentEdit (isShow) {
+      this.showCommentEdit = isShow
+    },
+
+    // 发表评论
+    async submitComment () {
+      const data = JSON.parse(localStorage.getItem('userInfo'))
+      if (data.is_guide) {
+        return this.$toast({
+          type: 'fail',
+          message: '导游论坛暂时未开放！',
+          icon: 'cross',
+          duration: 1500
+        })
       }
-    },
-    methods: {
-      ...mapMutations(['changeTabBarShow']),
-      //根据问题id获取该问题的所有信息
-      async getQuestionById() {
-        let d = await getQuestionById(this.$route.params.id)
-        this.questionData = d.question;
-        this.userInfo = d.creator;
-        this.comments = d.comments
-        this.imgList = d.img
-      },
-
-      //图片加载
-      imgLoad(){
-          this.$refs.bscroll.refresh()
-      },
-
-
-      //显示和隐藏评论表单
-      isShowCommentEdit(isShow) {
-        this.showCommentEdit = isShow
-      },
-
-      //发表评论
-      async submitComment() {
-        let data = JSON.parse(localStorage.getItem('userInfo'))
-        if (data.is_guide) {
-          return this.$toast({
-            type: "fail",
-            message: "导游论坛暂时未开放！",
-            icon: "cross",
-            duration: 1500
-          });
-        }
-        if (data.user_id) {
-          let d = await postComment({
-            commenter: data.user_id,
-            text: this.commentValue,
-            questionId: this.questionData.id
+      if (data.user_id) {
+        const d = await postComment({
+          commenter: data.user_id,
+          text: this.commentValue,
+          questionId: this.questionData.id
+        })
+        if (d.status.code === '200') {
+          this.$toast({
+            type: 'success',
+            message: '发表成功！'
           })
-          if (d.status.code === '200') {
-            this.$toast({
-              type: 'success',
-              message: '发表成功！'
-            })
-            this.getQuestionById()
-            this.$refs.bscroll.refresh()
-            this.showCommentEdit = false
-            this.commentValue = ""
-          } else {
-            this.$toast({
-              type: 'fail',
-              message: '账号或密码错误！',
-              icon: 'cross',
-              duration: 1500
-            })
-          }
+          this.getQuestionById()
+          this.$refs.bscroll.refresh()
+          this.showCommentEdit = false
+          this.commentValue = ''
         } else {
           this.$toast({
-            message: '请先登录！'
+            type: 'fail',
+            message: '账号或密码错误！',
+            icon: 'cross',
+            duration: 1500
           })
-          this.$router.push('/login')
         }
-
+      } else {
+        this.$toast({
+          message: '请先登录！'
+        })
+        this.$router.push('/login')
       }
-    },
-    created() {
-      this.changeTabBarShow(false)
+    }
+  },
+  created () {
+    this.changeTabBarShow(false)
 
-      this.getQuestionById()
-    },
-    destroyed() {
-      this.changeTabBarShow(true)
-    },
-    watch: {
-      comments(newvalue) {
-        if (newvalue.length > 0) {
-          this.showCommentDiv = true
-        } else {
-
-          this.showCommentDiv = false
-        }
+    this.getQuestionById()
+  },
+  destroyed () {
+    this.changeTabBarShow(true)
+  },
+  watch: {
+    comments (newvalue) {
+      if (newvalue.length > 0) {
+        this.showCommentDiv = true
+      } else {
+        this.showCommentDiv = false
       }
     }
   }
+}
 </script>
 
 <style scoped lang="less">

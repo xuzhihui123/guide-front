@@ -7,9 +7,9 @@
 
 import axios from 'axios'
 
-export function request(config) {
+export function request (config) {
   const instance = axios.create({
-    baseURL: 'http://39.101.186.75'
+    baseURL: process.env.VUE_APP_BASE_URL
   })
   instance.interceptors.request.use(config => {
     return config

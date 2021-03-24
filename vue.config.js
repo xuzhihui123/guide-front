@@ -6,18 +6,19 @@
  */
 
 module.exports = {
+  lintOnSave: true,
   configureWebpack: {
     resolve: {
       alias: {
-        'assets': '@/assets',
-        'components': '@/components',
-        'network': '@/network',
-        'views': '@/views',
-        'common':'components/common',
-        'content':'components/content',
-        'router':'@/router',
-        'store':'@/store',
-        'commonjs':'@/commonjs'
+        assets: '@/assets',
+        components: '@/components',
+        network: '@/network',
+        views: '@/views',
+        common: 'components/common',
+        content: 'components/content',
+        router: '@/router',
+        store: '@/store',
+        commonjs: '@/commonjs'
       }
     }
   }

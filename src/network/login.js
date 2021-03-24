@@ -5,32 +5,31 @@
  * @Last Modified time: 2019/12/19
  */
 
-import {request} from "network/request";
+import { request } from './request'
 import Qs from 'qs'
 
-
-export function loginForm(data) {
+export function loginForm (data) {
   return request({
-    method:'post',
-    url:'/userLogin',
+    method: 'post',
+    url: '/userLogin',
     data,
-    transformRequest:[function (data) {
+    transformRequest: [function (data) {
       data = Qs.stringify(data)
       return data
     }],
-    headers:{'Content-Type':'application/x-www-form-urlencoded'}
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
   })
 }
 
-export function guideLogin(data) {
+export function guideLogin (data) {
   return request({
-    method:'post',
-    url:'/guideLogin',
+    method: 'post',
+    url: '/guideLogin',
     data,
-    transformRequest:[function (data) {
+    transformRequest: [function (data) {
       data = Qs.stringify(data)
       return data
     }],
-    headers:{'Content-Type':'application/x-www-form-urlencoded'}
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
   })
 }

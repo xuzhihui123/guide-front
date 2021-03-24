@@ -12,20 +12,20 @@
 </template>
 
 <script>
-  import HomeItemBar from "content/homeitembar/HomeItemBar";
-  import SwiperTwo from "content/swipertwo/SwiperTwo";
-  export default {
-    name: "PreGuide",
-    components:{
-      HomeItemBar,
-      SwiperTwo
-    },
-    methods:{
-      goMore(){
-        console.log('111');
-      }
+import HomeItemBar from 'content/homeitembar/HomeItemBar'
+import SwiperTwo from 'content/swipertwo/SwiperTwo'
+export default {
+  name: 'PreGuide',
+  components: {
+    HomeItemBar,
+    SwiperTwo
+  },
+  methods: {
+    goMore () {
+      console.log('111')
     }
   }
+}
 </script>
 
 <style scoped lang="less">

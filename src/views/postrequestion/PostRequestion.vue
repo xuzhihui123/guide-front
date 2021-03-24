@@ -33,7 +33,6 @@
             :before-read="beforeRead"
     />
 
-
     <a class="submitPost" @click="postRequestion">
       确认提交
     </a>
@@ -47,121 +46,120 @@
 </template>
 
 <script>
-  import NavBar from "common/navbar/NavBar";
+import NavBar from 'common/navbar/NavBar'
 
-  import {mapMutations} from 'vuex'
+import { mapMutations } from 'vuex'
 
-  import {postQuestion} from 'network/find'
+import { postQuestion } from 'network/find'
 
-  export default {
-    name: "PostRequestion",
-    components: {
-      NavBar,
+export default {
+  name: 'PostRequestion',
+  components: {
+    NavBar
+  },
+  methods: {
+    ...mapMutations(['changeTabBarShow']),
+    goBack () {
+      this.$router.go(-1)
     },
-    methods: {
-      ...mapMutations(['changeTabBarShow']),
-      goBack() {
-        this.$router.go(-1)
-      },
-      beforeRead(file) {
-        if (!/\/(jpg|jpeg|png|bmp|BMP|JPG|PNG|JPEG)$/.test(file.type)) {
-          this.$toast({
-            type: "fail",
-            message: "您上传的不是图片格式哦~",
-            icon: "cross",
-            duration: 1500
-          });
-          return false;
-        } else {
-          return true;
-        }
-      },
+    beforeRead (file) {
+      if (!/\/(jpg|jpeg|png|bmp|BMP|JPG|PNG|JPEG)$/.test(file.type)) {
+        this.$toast({
+          type: 'fail',
+          message: '您上传的不是图片格式哦~',
+          icon: 'cross',
+          duration: 1500
+        })
+        return false
+      } else {
+        return true
+      }
+    },
 
-
-      //提交问题
-      async postRequestion() {
-        let userId = JSON.parse(localStorage.getItem('userInfo')).user_id
-        let isGuide = JSON.parse(localStorage.getItem('userInfo')).is_guide
-        if (isGuide) {
-          return this.$toast({
-            type: "fail",
-            message: "导游论坛暂时未开放！",
-            icon: "cross",
-            duration: 1500
-          });
-        }
-        if (!this.title || !this.text) {
-          return this.$toast({
-            type: "fail",
-            message: "请输入问题和内容哦~",
-            icon: "cross",
-            duration: 1500
-          });
-        }
-        if (userId) {
-          //先判是否有上传图片  没上传图片直接post
-          if (this.fileList.length === 0) {
-            this.isShowZZ = true
-            let f = new FormData()
-            f.append('userId',userId)
-            f.append('title',this.title)
-            f.append('text',this.text)
-            f.append('file','')
-            let d = await postQuestion(f)
-            if (d.status.code === '200') {
-              this.isShowZZ = false
-              this.$toast({
-                type: 'success',
-                message: '发表成功！'
-              })
-              this.$router.go(-1)
-            }
-            //有上传图片  先提交图片到服务器
-          } else {
-            this.isShowZZ = true
-            let f = new FormData()
-            f.append('userId',userId)
-            f.append('title',this.title)
-            f.append('text',this.text)
-            this.fileList.forEach(item=>{
-              f.append('file',item.file)
+    // 提交问题
+    async postRequestion () {
+      const userId = JSON.parse(localStorage.getItem('userInfo')).user_id
+      const isGuide = JSON.parse(localStorage.getItem('userInfo')).is_guide
+      if (isGuide) {
+        return this.$toast({
+          type: 'fail',
+          message: '导游论坛暂时未开放！',
+          icon: 'cross',
+          duration: 1500
+        })
+      }
+      if (!this.title || !this.text) {
+        return this.$toast({
+          type: 'fail',
+          message: '请输入问题和内容哦~',
+          icon: 'cross',
+          duration: 1500
+        })
+      }
+      if (userId) {
+        // 先判是否有上传图片  没上传图片直接post
+        if (this.fileList.length === 0) {
+          this.isShowZZ = true
+          const f = new FormData()
+          f.append('userId', userId)
+          f.append('title', this.title)
+          f.append('text', this.text)
+          f.append('file', '')
+          const d = await postQuestion(f)
+          if (d.status.code === '200') {
+            this.isShowZZ = false
+            this.$toast({
+              type: 'success',
+              message: '发表成功！'
             })
-            let d = await postQuestion(f)
-            if (d.status.code === '200') {
-              this.isShowZZ = false
-              this.$toast({
-                type: 'success',
-                message: '发表成功！'
-              })
-              this.$router.go(-1)
-            }
+            this.$router.go(-1)
           }
+          // 有上传图片  先提交图片到服务器
         } else {
-          this.$toast({
-            message: '请先登录！'
+          this.isShowZZ = true
+          const f = new FormData()
+          f.append('userId', userId)
+          f.append('title', this.title)
+          f.append('text', this.text)
+          this.fileList.forEach(item => {
+            f.append('file', item.file)
           })
-          this.$router.push('/login')
+          const d = await postQuestion(f)
+          if (d.status.code === '200') {
+            this.isShowZZ = false
+            this.$toast({
+              type: 'success',
+              message: '发表成功！'
+            })
+            this.$router.go(-1)
+          }
         }
+      } else {
+        this.$toast({
+          message: '请先登录！'
+        })
+        this.$router.push('/login')
       }
-    },
-    data() {
-      return {
-        title: '',
-        text: '',
-        fileList: [],
-        isShowZZ: false
-      }
-    },
-    mounted() {
-      this.$refs.title.focus()
-    },
-    created() {
-      this.changeTabBarShow(false)
-    },
-    destroyed() {
-      this.changeTabBarShow(true)
     }
+  },
+  data () {
+    return {
+      title: '',
+      text: '',
+      fileList: [],
+      isShowZZ: false
+    }
+  },
+  mounted () {
+    this.$refs.title.focus()
+  },
+  created () {
+    this.changeTabBarShow(false)
+  },
+  destroyed () {
+    this.changeTabBarShow(true)
   }
+}
 </script>
 
 <style scoped lang="less">
@@ -235,7 +233,6 @@
       font-size: 0.3rem;
       color: rgba(69, 90, 100, 0.6);
     }
-
 
     .title-requestion {
       padding: 0.2rem;

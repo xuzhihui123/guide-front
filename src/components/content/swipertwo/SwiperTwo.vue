@@ -12,47 +12,47 @@
 </template>
 
 <script>
-  import "swiper/dist/css/swiper.css";
-  import {swiper, swiperSlide} from "vue-awesome-swiper";
+import 'swiper/dist/css/swiper.css'
+import { swiper, swiperSlide } from 'vue-awesome-swiper'
 
-  export default {
-    name: "SwiperTwo",
-    components: {
-      swiper,
-      swiperSlide
-    },
-    data() {
-      return {
-        index: null,
-        swiperOptions: {
-          //每张播放时长3秒，自动播放
-          autoplay: false,
-          //滑动速度
-          freeMode: true,
-          freeModeMomentumVelocityRatio: 2,
-          observer: true,
-          slidesPerView: 'auto',
-        },
-      };
-    },
-    methods: {},
-    props: {
-      //传过来的轮播数据
-      viewList: {
-        type: Array,
-        default() {
-          return [];
-        }
+export default {
+  name: 'SwiperTwo',
+  components: {
+    swiper,
+    swiperSlide
+  },
+  data () {
+    return {
+      index: null,
+      swiperOptions: {
+        // 每张播放时长3秒，自动播放
+        autoplay: false,
+        // 滑动速度
+        freeMode: true,
+        freeModeMomentumVelocityRatio: 2,
+        observer: true,
+        slidesPerView: 'auto'
       }
-    },
-    computed: {
-      swiper() {
-        return this.$refs.mySwiper.swiper;
-      }
-    },
-    created() {
     }
+  },
+  methods: {},
+  props: {
+    // 传过来的轮播数据
+    viewList: {
+      type: Array,
+      default () {
+        return []
+      }
+    }
+  },
+  computed: {
+    swiper () {
+      return this.$refs.mySwiper.swiper
+    }
+  },
+  created () {
   }
+}
 </script>
 
 <style scoped lang="less">

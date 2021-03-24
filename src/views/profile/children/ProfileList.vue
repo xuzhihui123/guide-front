@@ -66,90 +66,89 @@
 </template>
 
 <script>
-  export default {
-    name: "profilelist",
-    methods: {
-      signOutUser() {
-        setTimeout(() => {
-          localStorage.setItem("userInfo", "{}");
-          localStorage.removeItem('orders')
-          this.$store.commit('changeOrderObj',{})
-          this.$store.commit('changeUserIsPay',false)
-          this.$toast({
-            type: "success",
-            message: "您已安全退出",
-            duration: 1500
-          });
-          this.$parent.getUserInfo();
-        }, 1000);
-      },
+export default {
+  name: 'profilelist',
+  methods: {
+    signOutUser () {
+      setTimeout(() => {
+        localStorage.setItem('userInfo', '{}')
+        localStorage.removeItem('orders')
+        this.$store.commit('changeOrderObj', {})
+        this.$store.commit('changeUserIsPay', false)
+        this.$toast({
+          type: 'success',
+          message: '您已安全退出',
+          duration: 1500
+        })
+        this.$parent.getUserInfo()
+      }, 1000)
+    },
 
-      //更改密码路由
-      goChangePsd() {
-        this.$router.push("/changepsd");
-      },
+    // 更改密码路由
+    goChangePsd () {
+      this.$router.push('/changepsd')
+    },
 
-      //个人主页路由跳转
-      goProfileDetailShow() {
-        this.$router.push("/profiledetailshow");
-      },
+    // 个人主页路由跳转
+    goProfileDetailShow () {
+      this.$router.push('/profiledetailshow')
+    },
 
-      //跳转导游接单页面
-      guideReceipt(){
-        this.$router.push(`/guideReceipt`)
-      },
+    // 跳转导游接单页面
+    guideReceipt () {
+      this.$router.push('/guideReceipt')
+    },
 
-      //去我的订单界面
-      goMyOrders(){
-        this.$router.push(`/myorders`)
+    // 去我的订单界面
+    goMyOrders () {
+      this.$router.push('/myorders')
+    }
+  },
+  data () {
+    return {}
+  },
+  props: {
+    iphoneCode: {
+      type: String,
+      default () {
+        return ''
       }
     },
-    data() {
-      return {};
-    },
-    props: {
-      iphoneCode: {
-        type: String,
-        default() {
-          return "";
-        }
-      },
-      isGuide: {
-        type: Object,
-        default() {
-          return {}
-        }
+    isGuide: {
+      type: Object,
+      default () {
+        return {}
+      }
+    }
+  },
+  computed: {
+    iphoneCodet () {
+      if (this.iphoneCode.length !== 0) {
+        return (
+          this.iphoneCode.substr(0, 4) + '****' + this.iphoneCode.substr(8)
+        )
+      } else {
+        return ''
       }
     },
-    computed: {
-      iphoneCodet() {
-        if (this.iphoneCode.length !== 0) {
-          return (
-              this.iphoneCode.substr(0, 4) + "****" + this.iphoneCode.substr(8)
-          );
-        } else {
-          return "";
-        }
-      },
-      singOutFlag() {
-        if (this.iphoneCode.length !== 0) {
-          return true;
-        } else {
-          return false;
-        }
-      },
-
-
-      //是否显示在线接单
-      isShowReceipt() {
-        if (this.isGuide.is_guide) {
-          return true
-        } else {
-          return false
-        }
+    singOutFlag () {
+      if (this.iphoneCode.length !== 0) {
+        return true
+      } else {
+        return false
       }
     },
-  };
+
+    // 是否显示在线接单
+    isShowReceipt () {
+      if (this.isGuide.is_guide) {
+        return true
+      } else {
+        return false
+      }
+    }
+  }
+}
 </script>
 
 <style scoped lang="less">

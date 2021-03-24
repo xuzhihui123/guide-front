@@ -9,27 +9,27 @@
 </template>
 
 <script>
-  export default {
-    name: "Feature",
-    data(){
-      return {
+export default {
+  name: 'Feature',
+  data () {
+    return {
 
-      }
-    },
-    props:{
-      featureImgList:{
-        type:Array,
-        default(){
-          return []
-        }
-      }
-    },
-    methods:{
-      goRouter(path){
-         this.$router.push(path)
+    }
+  },
+  props: {
+    featureImgList: {
+      type: Array,
+      default () {
+        return []
       }
     }
+  },
+  methods: {
+    goRouter (path) {
+      this.$router.push(path)
+    }
   }
+}
 </script>
 
 <style scoped lang="less">

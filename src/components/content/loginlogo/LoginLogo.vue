@@ -8,8 +8,8 @@
 </template>
 
 <script>
-  export default {
-    name: "LoginLogo"
+export default {
+  name: 'LoginLogo'
 }
 </script>
 

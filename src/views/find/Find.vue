@@ -10,50 +10,49 @@
 </template>
 
 <script>
-  import HeadSearchBar from "views/find/children/HeadSearchBar";
-  import FindQuestionList from "views/find/children/FindQuestionList";
-  import BScroll from 'common/bscroll/BScroll'
+import HeadSearchBar from 'views/find/children/HeadSearchBar'
+import FindQuestionList from 'views/find/children/FindQuestionList'
+import BScroll from 'common/bscroll/BScroll'
 
+// 导入network
+import { getAllRequesitons } from 'network/find'
 
-  //导入network
-  import {getAllRequesitons} from "network/find";
+// 导入防抖
+import { debounce } from 'commonjs/utils'
 
-  //导入防抖
-  import {debounce} from "commonjs/utils";
-
-  export default {
-    name: "Find",
-    components: {
-      HeadSearchBar,
-      FindQuestionList,
-      BScroll
-    },
-    data(){
-      return{
-        myProbeT:3,
-        questionList:[]
-      }
-    },
-    methods:{
-      //获取所有问题
-      async getAllQues(){
-        let data = await getAllRequesitons()
-        this.questionList = data;
-      }
-    },
-    mounted() {
-      let refresh = debounce(this.$refs.bscroll.refresh,300)
-      this.$bus.$on('imgLoad',()=>{
-        refresh()
-      })
-    },
-    created() {
-      this.getAllQues();
-    },
-    activated() {
-      this.getAllQues();
+export default {
+  name: 'Find',
+  components: {
+    HeadSearchBar,
+    FindQuestionList,
+    BScroll
+  },
+  data () {
+    return {
+      myProbeT: 3,
+      questionList: []
     }
+  },
+  methods: {
+    // 获取所有问题
+    async getAllQues () {
+      const data = await getAllRequesitons()
+      this.questionList = data
+    }
+  },
+  mounted () {
+    const refresh = debounce(this.$refs.bscroll.refresh, 300)
+    this.$bus.$on('imgLoad', () => {
+      refresh()
+    })
+  },
+  created () {
+    this.getAllQues()
+  },
+  activated () {
+    this.getAllQues()
   }
+}
 </script>
 
 <style scoped lang="less">

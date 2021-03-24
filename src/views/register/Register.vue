@@ -9,7 +9,6 @@
       </div>
     </nav-bar>
 
-
     <login-logo class="loginLogo"/>
 
     <!--    登录表单-->
@@ -35,7 +34,6 @@
         <input type="number" placeholder="请输入手机号" v-model="iphone" @input="changeShowFlagT">
       </div>
 
-
       <!--      真实姓名  需要是导游才显示注册-->
       <div class="password" v-show="isGuideShow">
         <input type="text" placeholder="请输入真实姓名" v-model="guideTrueName" @input="changeShowFlagT">
@@ -51,224 +49,222 @@
 </template>
 
 <script>
-  //引入vuex的方法
-  import {mapMutations} from 'vuex'
+// 引入vuex的方法
+import { mapMutations } from 'vuex'
 
-  //引入组件
-  import NavBar from 'common/navbar/NavBar'
-  import LoginLogo from 'content/loginlogo/LoginLogo'
+// 引入组件
+import NavBar from 'common/navbar/NavBar'
+import LoginLogo from 'content/loginlogo/LoginLogo'
 
-  //引入网络请求
-  import {registerForm, registerGuideForm} from 'network/register'
+// 引入网络请求
+import { registerForm, registerGuideForm } from 'network/register'
 
-  export default {
-    name: "Register",
-    data() {
-      return {
-        userName: '',
-        passWord: '',
-        iphone: '',
-        guideTrueName: '',
-        isGuide: '',
-        isGuideShow: false,
-        inputBg: {
-          backgroundImage: 'url(' + require('assets/input-close.svg') + ')'
-        },
-        closeFlag: false,
-        closeFlagT: false,
+export default {
+  name: 'Register',
+  data () {
+    return {
+      userName: '',
+      passWord: '',
+      iphone: '',
+      guideTrueName: '',
+      isGuide: '',
+      isGuideShow: false,
+      inputBg: {
+        backgroundImage: 'url(' + require('assets/input-close.svg') + ')'
+      },
+      closeFlag: false,
+      closeFlagT: false
+    }
+  },
+  methods: {
+    ...mapMutations(['changeTabBarShow']),
+    goBack () {
+      this.$router.push('/login')
+    },
+    changeShowFlag () {
+      if (this.userName !== '') {
+        this.closeFlag = true
+      } else {
+        this.closeFlag = false
       }
     },
-    methods: {
-      ...mapMutations(['changeTabBarShow']),
-      goBack() {
-        this.$router.push('/login')
-      },
-      changeShowFlag() {
-        if (this.userName !== '') {
-          this.closeFlag = true
-        } else {
-          this.closeFlag = false
-        }
-      },
-      changeShowFlagT() {
-        if (this.passWord !== '') {
-          this.closeFlagT = true
-        } else {
-          this.closeFlagT = false
-        }
-      },
-      clearInput() {
-        this.userName = ''
-        this.closeFlag = false
-      },
-      clearInputT() {
-        this.passWord = ''
+    changeShowFlagT () {
+      if (this.passWord !== '') {
+        this.closeFlagT = true
+      } else {
         this.closeFlagT = false
-      },
-      submitRegisForm() {
-        //如果是用户
-        if (this.isGuide === '1') {
-          if ((this.userName === "" && this.passWord === "" && this.iphone === "") || (this.userName === "" || this.passWord === "" || this.iphone === "")) {
-            return this.$toast({
-              type: 'fail',
-              message: '请检查信息是否完整!',
-              icon: 'cross',
-              duration: 1000
-            })
-          }
-          registerForm({
-            userName: this.userName,
-            userPassWord: this.passWord,
-            userPhone: this.iphone
-          }).then(r => {
-            if (r.status.code === '501') {
-              return this.$toast({
-                type: 'fail',
-                message: '用户名不符合标准!',
-                icon: 'cross',
-                duration: 1500
-              })
-            } else if (r.status.code === '503') {
-              return this.$toast({
-                type: 'fail',
-                message: '请检查手机号码是否正确!',
-                icon: 'cross',
-                duration: 1500
-              })
-            } else if (r.status.code === '502') {
-              return this.$toast({
-                type: 'fail',
-                message: '密码不符合标准!',
-                icon: 'cross',
-                duration: 1500
-              })
-            } else if (r.status.code === '504') {
-              return this.$toast({
-                type: 'fail',
-                message: '用户已存在！',
-                icon: 'cross',
-                duration: 1500
-              })
-            } else if (r.status.code === '200') {
-              this.$toast({
-                type: 'success',
-                message: '注册成功!',
-                duration: 1500
-              })
-              //保存数据到localstorage
-              let {user_avatar, user_name, user_nick, user_phone, user_id} = r.data
-              let userData = {user_avatar, user_name, user_nick, user_phone, user_id}
-              localStorage.setItem('userInfo', JSON.stringify(userData))
-
-
-              //页面跳转到 profile
-              this.$router.push('/profile')
-            }
+      }
+    },
+    clearInput () {
+      this.userName = ''
+      this.closeFlag = false
+    },
+    clearInputT () {
+      this.passWord = ''
+      this.closeFlagT = false
+    },
+    submitRegisForm () {
+      // 如果是用户
+      if (this.isGuide === '1') {
+        if ((this.userName === '' && this.passWord === '' && this.iphone === '') || (this.userName === '' || this.passWord === '' || this.iphone === '')) {
+          return this.$toast({
+            type: 'fail',
+            message: '请检查信息是否完整!',
+            icon: 'cross',
+            duration: 1000
           })
         }
-        //如果是导游
-        if (this.isGuide === '0') {
-          if ((this.userName === "" && this.passWord === "" && this.iphone === "" && this.guideTrueName === '') || (this.userName === "" || this.passWord === "" || this.iphone === "" || this.guideTrueName === '')) {
+        registerForm({
+          userName: this.userName,
+          userPassWord: this.passWord,
+          userPhone: this.iphone
+        }).then(r => {
+          if (r.status.code === '501') {
             return this.$toast({
               type: 'fail',
-              message: '请检查信息是否完整!',
+              message: '用户名不符合标准!',
               icon: 'cross',
-              duration: 1000
+              duration: 1500
             })
-          }
-          //否则注册
-          registerGuideForm({
-            guideName: this.userName,
-            guidePhone: this.iphone,
-            guideTrueName: this.guideTrueName,
-            guidePassWord: this.passWord
-          }).then(r => {
-            if (r.status.code === '501') {
-              return this.$toast({
-                type: 'fail',
-                message: '用户名不符合标准!',
-                icon: 'cross',
-                duration: 1500
-              })
-            } else if (r.status.code === '503') {
-              return this.$toast({
-                type: 'fail',
-                message: '请检查手机号码是否正确!',
-                icon: 'cross',
-                duration: 1500
-              })
-            } else if (r.status.code === '502') {
-              return this.$toast({
-                type: 'fail',
-                message: '密码不符合标准!',
-                icon: 'cross',
-                duration: 1500
-              })
-            } else if (r.status.code === '504') {
-              return this.$toast({
-                type: 'fail',
-                message: '用户已存在！',
-                icon: 'cross',
-                duration: 1500
-              })
-            } else if (r.status.code === '200') {
-              this.$toast({
-                type: 'success',
-                message: '注册成功!',
-                duration: 1500
-              })
-            }
-
-            let userData = {
-              user_avatar: r.data.guide_avatar,
-              user_name: r.data.guide_name,
-              user_nick: r.data.guide_nick,
-              user_phone: r.data.guide_phone,
-              user_id: r.data.guide_id,
-              is_guide: 'y'
-            }
+          } else if (r.status.code === '503') {
+            return this.$toast({
+              type: 'fail',
+              message: '请检查手机号码是否正确!',
+              icon: 'cross',
+              duration: 1500
+            })
+          } else if (r.status.code === '502') {
+            return this.$toast({
+              type: 'fail',
+              message: '密码不符合标准!',
+              icon: 'cross',
+              duration: 1500
+            })
+          } else if (r.status.code === '504') {
+            return this.$toast({
+              type: 'fail',
+              message: '用户已存在！',
+              icon: 'cross',
+              duration: 1500
+            })
+          } else if (r.status.code === '200') {
+            this.$toast({
+              type: 'success',
+              message: '注册成功!',
+              duration: 1500
+            })
+            // 保存数据到localstorage
+            const { user_avatar, user_name, user_nick, user_phone, user_id } = r.data
+            const userData = { user_avatar, user_name, user_nick, user_phone, user_id }
             localStorage.setItem('userInfo', JSON.stringify(userData))
 
-            localStorage.removeItem('receiveFlag')
-            this.$store.commit('changeReceiveFlag', false)
-
-            this.$store.commit('changeGuideId', r.data.guide_id)
-
-            //页面跳转到 profile
+            // 页面跳转到 profile
             this.$router.push('/profile')
+          }
+        })
+      }
+      // 如果是导游
+      if (this.isGuide === '0') {
+        if ((this.userName === '' && this.passWord === '' && this.iphone === '' && this.guideTrueName === '') || (this.userName === '' || this.passWord === '' || this.iphone === '' || this.guideTrueName === '')) {
+          return this.$toast({
+            type: 'fail',
+            message: '请检查信息是否完整!',
+            icon: 'cross',
+            duration: 1000
           })
         }
-      },
+        // 否则注册
+        registerGuideForm({
+          guideName: this.userName,
+          guidePhone: this.iphone,
+          guideTrueName: this.guideTrueName,
+          guidePassWord: this.passWord
+        }).then(r => {
+          if (r.status.code === '501') {
+            return this.$toast({
+              type: 'fail',
+              message: '用户名不符合标准!',
+              icon: 'cross',
+              duration: 1500
+            })
+          } else if (r.status.code === '503') {
+            return this.$toast({
+              type: 'fail',
+              message: '请检查手机号码是否正确!',
+              icon: 'cross',
+              duration: 1500
+            })
+          } else if (r.status.code === '502') {
+            return this.$toast({
+              type: 'fail',
+              message: '密码不符合标准!',
+              icon: 'cross',
+              duration: 1500
+            })
+          } else if (r.status.code === '504') {
+            return this.$toast({
+              type: 'fail',
+              message: '用户已存在！',
+              icon: 'cross',
+              duration: 1500
+            })
+          } else if (r.status.code === '200') {
+            this.$toast({
+              type: 'success',
+              message: '注册成功!',
+              duration: 1500
+            })
+          }
 
+          const userData = {
+            user_avatar: r.data.guide_avatar,
+            user_name: r.data.guide_name,
+            user_nick: r.data.guide_nick,
+            user_phone: r.data.guide_phone,
+            user_id: r.data.guide_id,
+            is_guide: 'y'
+          }
+          localStorage.setItem('userInfo', JSON.stringify(userData))
 
-    },
-    watch: {
-      userName() {
-        this.userName = this.userName.replace(/[^A-Za-z0-9]/g, '')
-      },
-      passWord() {
-        this.passWord = this.passWord.replace(/[^A-Za-z0-9]/g, '')
-      },
-      isGuide(newValue) {
-        if (newValue === '0') {
-          this.isGuideShow = true;
-        } else {
-          this.isGuideShow = false;
-        }
+          localStorage.removeItem('receiveFlag')
+          this.$store.commit('changeReceiveFlag', false)
+
+          this.$store.commit('changeGuideId', r.data.guide_id)
+
+          // 页面跳转到 profile
+          this.$router.push('/profile')
+        })
       }
-    },
-    created() {
-      this.changeTabBarShow(false)
-      this.isGuide = this.$route.params.id
-    },
-    destroyed() {
-      this.changeTabBarShow(true)
-    },
-    components: {
-      NavBar,
-      LoginLogo
     }
+
+  },
+  watch: {
+    userName () {
+      this.userName = this.userName.replace(/[^A-Za-z0-9]/g, '')
+    },
+    passWord () {
+      this.passWord = this.passWord.replace(/[^A-Za-z0-9]/g, '')
+    },
+    isGuide (newValue) {
+      if (newValue === '0') {
+        this.isGuideShow = true
+      } else {
+        this.isGuideShow = false
+      }
+    }
+  },
+  created () {
+    this.changeTabBarShow(false)
+    this.isGuide = this.$route.params.id
+  },
+  destroyed () {
+    this.changeTabBarShow(true)
+  },
+  components: {
+    NavBar,
+    LoginLogo
   }
+}
 </script>
 
 <style scoped lang="less">

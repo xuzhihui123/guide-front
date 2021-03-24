@@ -13,14 +13,14 @@
 </template>
 
 <script>
-  export default {
-    name: "HomeItemBar",
-    methods:{
-      goMore(){
-        this.$emit('goPreGuideMore')
-      }
+export default {
+  name: 'HomeItemBar',
+  methods: {
+    goMore () {
+      this.$emit('goPreGuideMore')
     }
   }
+}
 </script>
 
 <style scoped lang="less">

@@ -13,17 +13,17 @@
 </template>
 
 <script>
-  export default {
-    name: "NavBar",
-    props: {
-      navBarBg: {
-        type: String,
-        default() {
-          return '#ffff'
-        }
+export default {
+  name: 'NavBar',
+  props: {
+    navBarBg: {
+      type: String,
+      default () {
+        return '#ffff'
       }
     }
   }
+}
 </script>
 
 <style scoped lang="less">
