@@ -33,9 +33,9 @@
             :before-read="beforeRead"
     />
 
-    <a class="submitPost" @click="postRequestion">
+    <div class="submitPost" @click="postRequestion">
       确认提交
-    </a>
+    </div>
 
     <!--    //加载遮罩-->
     <div class="bg-zhezhao" v-show="isShowZZ">
@@ -78,15 +78,9 @@ export default {
 
     // 提交问题
     async postRequestion () {
-      const userId = JSON.parse(localStorage.getItem('userInfo')).user_id
-      const isGuide = JSON.parse(localStorage.getItem('userInfo')).is_guide
-      if (isGuide) {
-        return this.$toast({
-          type: 'fail',
-          message: '导游论坛暂时未开放！',
-          icon: 'cross',
-          duration: 1500
-        })
+      let userId
+      if (localStorage.getItem('userInfo')) {
+        userId = JSON.parse(localStorage.getItem('userInfo')).user_id
       }
       if (!this.title || !this.text) {
         return this.$toast({
@@ -215,6 +209,7 @@ export default {
       font-size: 0.3rem;
       line-height: 0.7rem;
       margin: 0.2rem auto;
+      cursor: pointer;
     }
 
     .head {

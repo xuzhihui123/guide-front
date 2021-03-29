@@ -2,7 +2,7 @@
   <!--    logo-->
   <div class="logo">
     <div class="logo-inner">
-      <img src="~assets/mybg.png" alt="">
+      <img src="https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=2492633268,262337583&fm=26&gp=0.jpg" alt="">
     </div>
   </div>
 </template>

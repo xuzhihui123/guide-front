@@ -9,10 +9,13 @@ import BaiduMap from 'vue-baidu-map'
 import 'assets/css/common.css'
 import 'animate.css'
 import 'assets/css/iconfont.css'
+import { uncodeUtf16 } from 'commonjs/utils'
 
 import { Tabbar, TabbarItem, Icon, Toast, ActionSheet, Uploader, Notify, Field, Cell, CellGroup, Popup, NavBar, NoticeBar, Dialog, Overlay } from 'vant'
 
 import moment from 'moment'
+
+import waterfall from 'vue-waterfall2'
 
 Vue.prototype.$bus = new Vue()
 
@@ -48,6 +51,7 @@ Vue.use(Cell).use(CellGroup)
 Vue.use(Dialog)
 
 Vue.use(Overlay)
+Vue.use(waterfall)
 
 Vue.directive('focus', {
 // 当被绑定的元素插入到 DOM 中时……
@@ -57,8 +61,14 @@ Vue.directive('focus', {
   }
 })
 
+moment.locale('zh-cn')
+
 Vue.filter('dateFormat', (str, data = 'YYYY-MM-DD') => {
   return moment(str).format(data)
+})
+
+Vue.filter('parseText', (str) => {
+  return uncodeUtf16(str)
 })
 
 new Vue({

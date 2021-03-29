@@ -1,7 +1,7 @@
 <template>
   <div class="find-lt">
 <!--     头部搜索-->
-      <head-search-bar/>
+      <head-search-bar @getQuestionSearch="getQuestionSearch"/>
 <!--    问题内容列表-->
       <b-scroll class="wrapper" :myprobe-type="myProbeT" ref="bscroll">
         <find-question-list :question-list="questionList"/>
@@ -33,13 +33,6 @@ export default {
       questionList: []
     }
   },
-  methods: {
-    // 获取所有问题
-    async getAllQues () {
-      const data = await getAllRequesitons()
-      this.questionList = data
-    }
-  },
   mounted () {
     const refresh = debounce(this.$refs.bscroll.refresh, 300)
     this.$bus.$on('imgLoad', () => {
@@ -51,6 +44,16 @@ export default {
   },
   activated () {
     this.getAllQues()
+  },
+  methods: {
+    // 获取所有问题
+    async getAllQues () {
+      const data = await getAllRequesitons()
+      this.questionList = data
+    },
+    getQuestionSearch (d) {
+      this.questionList = d
+    }
   }
 }
 </script>

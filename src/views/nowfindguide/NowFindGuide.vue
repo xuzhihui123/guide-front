@@ -290,19 +290,6 @@ export default {
       }
     }
   },
-
-  destroyed () {
-    this.changeTabBarShow(true)
-  },
-  created () {
-    this.changeTabBarShow(false)
-    this.getAddressInfo()
-    // 获取用户id
-    this.getUserId()
-  },
-  components: {
-    BScroll
-  },
   watch: {
     // 监听目的地text信息为空的话清空 地址列表
     destinationText (newValue) {
@@ -319,6 +306,19 @@ export default {
         this.$refs.bscroll.refresh()
       }
     }
+  },
+
+  destroyed () {
+    this.changeTabBarShow(true)
+  },
+  created () {
+    this.changeTabBarShow(false)
+    this.getAddressInfo()
+    // 获取用户id
+    this.getUserId()
+  },
+  components: {
+    BScroll
   }
 
 }

@@ -55,6 +55,7 @@ export default {
       font-size: 0.34rem;
       font-weight: 700;
       justify-content: center;
+      color: #fff;
     }
     .right{
       justify-content: flex-end;

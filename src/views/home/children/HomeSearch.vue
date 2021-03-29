@@ -17,7 +17,7 @@ export default {
   name: 'HomeSearch',
   data () {
     return {
-      searchText: '搜索目的地/向导/玩法'
+      searchText: '搜索感兴趣的话题~'
     }
   },
   methods: {
@@ -45,7 +45,7 @@ export default {
         height: 0.65rem;
         border: none;
         background-color: #fff;
-        border-radius: 0.3rem;
+        border-radius: 0.1rem;
         font-size: 0.28rem;
         color: #666;
         text-align: center;

@@ -85,12 +85,31 @@ import { getAlreadyOrder } from 'network/order'
 
 export default {
   name: 'MyOrders',
+  components: {
+    BScroll
+  },
   data () {
     return {
       isShowEmpty: false,
       isShowGuide: false,
       orderDataList: []
     }
+  },
+  watch: {
+    // 监听数据有无变化 空数据则显示无订单信息 否则显示订单信息
+    orderDataList: {
+      immediate: true,
+      handler (newValue) {
+        if (newValue.length !== 0) {
+          this.isShowEmpty = false
+        } else {
+          this.isShowEmpty = true
+        }
+      }
+    }
+  },
+  created () {
+    this.getAllMyOrders()
   },
   methods: {
     // 获取已完成的订单
@@ -119,25 +138,6 @@ export default {
     goSingleOrder (id) {
       this.$router.push('/histroySingleOrder/' + id)
     }
-  },
-  watch: {
-    // 监听数据有无变化 空数据则显示无订单信息 否则显示订单信息
-    orderDataList: {
-      immediate: true,
-      handler (newValue) {
-        if (newValue.length !== 0) {
-          this.isShowEmpty = false
-        } else {
-          this.isShowEmpty = true
-        }
-      }
-    }
-  },
-  components: {
-    BScroll
-  },
-  created () {
-    this.getAllMyOrders()
   }
 }
 </script>

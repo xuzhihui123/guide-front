@@ -34,3 +34,45 @@ export function throttle (fn, wait) {
     }, wait)
   }
 }
+
+export function utf16toEntities (str) {
+  var patt = /[\ud800-\udbff][\udc00-\udfff]/g // 检测utf16字符正则
+  str = str.replace(patt, function (char) {
+    var H, L, code
+    if (char.length === 2) {
+      H = char.charCodeAt(0) // 取出高位
+      L = char.charCodeAt(1) // 取出低位
+      code = (H - 0xD800) * 0x400 + 0x10000 + L - 0xDC00 // 转换算法
+      return '&#' + code + ';'
+    } else {
+      return char
+    }
+  })
+  return str
+}
+
+export function uncodeUtf16 (str) {
+  // eslint-disable-next-line no-useless-escape
+  var reg = /\&#.*?;/g
+  var result = str.replace(reg, function (char) {
+    var H, L, code
+    // eslint-disable-next-line eqeqeq
+    if (char.length == 9) {
+      code = parseInt(char.match(/[0-9]+/g))
+      H = Math.floor((code - 0x10000) / 0x400) + 0xD800
+      L = (code - 0x10000) % 0x400 + 0xDC00
+      return unescape('%u' + H.toString(16) + '%u' + L.toString(16))
+    } else {
+      return char
+    }
+  })
+  return result
+}
+
+export function getItem (key) {
+  if (localStorage.getItem(key) && Object.keys(JSON.parse(localStorage.getItem(key))).length) {
+    return JSON.parse(localStorage.getItem(key))
+  } else {
+    return false
+  }
+}

@@ -124,6 +124,9 @@ import { userPay, orderOpinion, orderFinish } from 'network/order'
 
 export default {
   name: 'OrderDetail',
+  components: {
+    BScroll
+  },
   data () {
     return {
       userData: {},
@@ -179,9 +182,6 @@ export default {
         }
       }
     }
-  },
-  components: {
-    BScroll
   },
   computed: {
     ...mapState(['orderObj', 'userIsPay', 'userIsCancel'])

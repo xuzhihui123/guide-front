@@ -1,6 +1,6 @@
 <template>
   <div id="home">
-    <b-scroll class="bscroll">
+    <b-scroll class="bscroll" ref="bscroll">
       <!--       头部搜索和轮播图-->
       <div class="home-header_swapper">
         <!--              头部搜索和定位-->
@@ -12,16 +12,16 @@
         <swiper :view-list="bannerList"/>
       </div>
 
-      <van-notice-bar :text="noticeBarText" left-icon="volume-o" class="notice-bar" :scrollable="true"/>
+      <!-- <van-notice-bar :text="noticeBarText" left-icon="volume-o" class="notice-bar" :scrollable="true"/> -->
 
       <!--    feature开始-->
-      <feature :feature-img-list="featureImgList"/>
+      <!-- <feature :feature-img-list="featureImgList"/> -->
 
-      <!--    优选向导开始-->
+      <!--    质量交友开始-->
       <pre-guide class="preguide"/>
 
       <!--      当地必玩开始-->
-      <local-play/>
+      <local-play @goChatPage="goChatPage"/>
     </b-scroll>
   </div>
 </template>
@@ -31,19 +31,30 @@
 // 导入组件
 import HomeSearch from 'views/home/children/HomeSearch'
 import Swiper from 'common/swiper/Swiper'
-import Feature from 'views/home/children/Feature'
 import PreGuide from 'views/home/children/PreGuide'
 import LocalPlay from 'views/home/children/LocalPlay'
 import BScroll from 'common/bscroll/BScroll'
+// 导入防抖
+import { debounce } from 'commonjs/utils'
 
 // 导入network
 import { getBanner } from 'network/home'
 
 export default {
   name: 'Home',
+  components: {
+    // HomeItemBar,
+    HomeSearch,
+    Swiper,
+    // Feature,
+    PreGuide,
+    BScroll,
+    LocalPlay
+  },
   data: function () {
     return {
-      bannerList: [],
+      bannerList: ['https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1724329732,2533612603&fm=26&gp=0.jpg',
+        'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=129474270,2801435851&fm=26&gp=0.jpg'],
       featureImgList: [
         {
           image: require('assets/home-feature_icon1.png'),
@@ -116,9 +127,12 @@ export default {
     }
   },
   created () {
-    this.getBannerList()
+    // this.getBannerList()
   },
   methods: {
+    goMore () {
+
+    },
     // 获取轮播图
     getBannerList () {
       getBanner().then(r => {
@@ -126,15 +140,29 @@ export default {
           this.bannerList = r.data
         }
       })
+    },
+    goChatPage (id) {
+      if (localStorage.getItem('userInfo') && JSON.parse(localStorage.getItem('userInfo')).user_id) {
+        this.$router.push(`/profiledetailshow/${id}`)
+      } else {
+        this.$router.push('/login')
+        return this.$toast({
+          type: 'fail',
+          message: '请先登录',
+          icon: 'cross',
+          duration: 1500
+        })
+      }
     }
   },
-  components: {
-    HomeSearch,
-    Swiper,
-    Feature,
-    PreGuide,
-    BScroll,
-    LocalPlay
+  mounted () {
+    const refresh = debounce(this.$refs.bscroll.refresh, 300)
+    this.$bus.$on('imgLoads', () => {
+      refresh()
+    })
+  },
+  deactivated () {
+    this.$bus.$off('imgLoads')
   }
 }
 </script>
@@ -142,6 +170,9 @@ export default {
 <style scoped lang="less">
   #home {
     height: 100vh;
+    .preguide{
+      margin-top: -1.4rem;
+}
   }
 
   .notice-bar {
@@ -174,7 +205,7 @@ export default {
     width: 100%;
     height: 3.2rem;
     position: relative;
-    background-image: linear-gradient(135deg, #FFD3A5 10%, #FD6585 100%);
+background-image: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
     border-bottom-left-radius: 0.3rem;
     border-bottom-right-radius: 0.3rem;
   }
@@ -185,11 +216,9 @@ export default {
     bottom: 1.5rem;
     transform: translateX(-50%);
     width: 6.8rem;
-    height: 2.8rem;
     border-radius: 0.2rem;
+    height: 2.8rem;
     overflow: hidden;
   }
 
-  .preguide {
-  }
 </style>

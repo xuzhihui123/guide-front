@@ -4,7 +4,7 @@
     <span class="back-go" :style="{'background-image':'url('+require('assets/arrow-left.svg')+')'}" @click="goBack"></span>
     <input type="text" class="inner" placeholder="搜索感兴趣的话题">
     <div class="submit" @click="goPostRequestion">
-      <img src="~assets/find-tw.svg" alt="">
+      <img src="~assets/tiwen-p.png" alt="">
       <span>提问</span>
     </div>
   </div>

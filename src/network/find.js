@@ -55,3 +55,12 @@ export function postQuestion (data) {
     headers: { 'Content-Type': 'multipart/form-data' }
   })
 }
+
+// 搜索问题
+export function selectQuestions (params) {
+  return request({
+    method: 'get',
+    url: '/selectQuestions',
+    params
+  })
+}

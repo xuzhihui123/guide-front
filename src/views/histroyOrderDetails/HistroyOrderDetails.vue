@@ -101,13 +101,21 @@ import BScroll from 'common/bscroll/BScroll'
 
 export default {
   name: 'HistroyOrderDetails',
+  components: {
+    BScroll
+  },
   data () {
     return {
       singleOrderData: []
     }
   },
-  components: {
-    BScroll
+  created () {
+    this.getDetail()
+    this.$notify({
+      message: '感谢您使用寻导平台~',
+      duration: 3000,
+      type: 'success'
+    })
   },
   methods: {
     // 获取当前的orderid的详细信息
@@ -120,14 +128,6 @@ export default {
     goBack () {
       this.$router.go(-1)
     }
-  },
-  created () {
-    this.getDetail()
-    this.$notify({
-      message: '感谢您使用寻导平台~',
-      duration: 3000,
-      type: 'success'
-    })
   }
 }
 </script>

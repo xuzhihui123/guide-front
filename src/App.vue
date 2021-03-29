@@ -4,7 +4,7 @@
     <transition enter-active-class="fadeIn animated" leave-active-class="fadeOut animated"
                 :duration="{enter:200,leave:200}" mode="out-in">
       <keep-alive
-              exclude="Login,Register,Profile,ProfileDetail,ChangePassword,ProfileDetailShow,Search,FindDetail,PostRequestion,NowFindGuide,Orders,OrderDetail,MyOrders,HistroyOrderDetails">
+              exclude="Chat,Login,Register,Profile,ProfileDetail,ChangePassword,ProfileDetailShow,Search,FindDetail,PostRequestion,NowFindGuide,Orders,OrderDetail,MyOrders,HistroyOrderDetails">
         <router-view/>
       </keep-alive>
     </transition>
@@ -16,35 +16,38 @@ import { mapState } from 'vuex'
 import { guideStopReceiveOrder } from 'network/order'
 
 export default {
+  components: {
+    TabBar
+  },
   data () {
     return {
-      activeColors: '#FF699C',
+      activeColors: '#3072f5',
       tabBarIcons: [
         {
           name: '首页',
-          active: require('assets/nav_2_active.png'),
-          inactive: require('assets/nav_2.png'),
+          active: require('assets/social-home_active.png'),
+          inactive: require('assets/social-home.png'),
           router: '/home',
           index: 100
         },
         {
-          name: '发现',
-          active: require('assets/nav_3_active.png'),
-          inactive: require('assets/nav_3.png'),
+          name: '论坛',
+          active: require('assets/social-luntan_active.png'),
+          inactive: require('assets/social-luntan.png'),
           router: '/find',
           index: 101
         },
         {
-          name: '订单',
-          active: require('assets/nav_4_active.png'),
-          inactive: require('assets/nav_4.png'),
+          name: '消息',
+          active: require('assets/social-message_active.png'),
+          inactive: require('assets/social-message.png'),
           router: '/orders',
           index: 102
         },
         {
           name: '我的',
-          active: require('assets/nav_5_active.png'),
-          inactive: require('assets/nav_5.png'),
+          active: require('assets/social-my_active.png'),
+          inactive: require('assets/social-my.png'),
           router: '/profile',
           index: 103
         }
@@ -60,6 +63,8 @@ export default {
         }
       }
     }
+  },
+  created () {
   },
   methods: {
 
@@ -125,11 +130,6 @@ export default {
       }
     }
 
-  },
-  created () {
-  },
-  components: {
-    TabBar
   },
   computed: {
     ...mapState(['tabBarShow', 'guideId'])

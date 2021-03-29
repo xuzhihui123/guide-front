@@ -3,7 +3,7 @@
     <!--    navbar-->
     <div class="right">
       <div class="right_inner" @click="goBack">
-        先逛逛
+        回到首页
       </div>
     </div>
 
@@ -28,14 +28,10 @@
 
       <!--      忘记密码？-->
       <div class="forget-psd_register">
-        <div class="forget">忘记密码?</div>
-        <div class="flag">|</div>
         <div class="register" @click="goRegis">现在注册</div>
       </div>
     </div>
 
-    <!--    选择注册导游还是用户-->
-    <van-action-sheet v-model="hidenRegister" :actions="actions" @select="onSelectRegis" description="请选择注册类型"/>
   </div>
 </template>
 
@@ -48,7 +44,6 @@ import LoginLogo from 'content/loginlogo/LoginLogo'
 
 // 引入network
 import { loginForm, guideLogin } from 'network/login'
-import { getOngoingOrder } from 'network/order'
 
 export default {
   name: 'Login',
@@ -58,25 +53,20 @@ export default {
       this.$router.push('/home')
     },
     changeIcon () {
-      this.clickInputIcon.userName.inactive = require('assets/login-user-icon-active.svg')
+      this.clickInputIcon.userName.inactive = require('assets/login_user_active.png')
     },
     changeIconT () {
-      this.clickInputIcon.passWord.inactive = require('assets/login-user-lock-active.svg')
+      this.clickInputIcon.passWord.inactive = require('assets/login_pass_active.png')
     },
     changeIconU () {
-      this.clickInputIcon.userName.inactive = require('assets/login-user-icon.svg')
+      this.clickInputIcon.userName.inactive = require('assets/login_user.png')
     },
     changeIconTu () {
-      this.clickInputIcon.passWord.inactive = require('assets/login-user-lock.svg')
+      this.clickInputIcon.passWord.inactive = require('assets/login_pass.png')
     },
 
     goRegis () {
-      this.hidenRegister = true
-    },
-    onSelectRegis (item) {
-      // 传入0是进入导游  传入1是进入用户
-      this.$router.push(`/register/${item.flag}`)
-      this.hidenRegister = false
+      this.$router.push('/register')
     },
 
     // 用户的请求方法
@@ -120,51 +110,15 @@ export default {
           const userData = { user_avatar, user_name, user_nick, user_phone, user_id }
           localStorage.setItem('userInfo', JSON.stringify(userData))
 
-          getOngoingOrder({ guide_id: 0, user_id }).then(r => {
-            // 表示有进行中的订单
-            if (r.code === '200') {
-              this.$store.commit('changeOrderObj', r.msg[0])
-              // 设置储存
-              localStorage.setItem('orders', JSON.stringify(r.msg[0]))
-              this.$router.push('/profile')
-            } else {
-              this.$router.push('/profile')
-            }
-          })
+          this.$router.push('/profile')
 
-          // 页面跳转到 profile
-        }
-
-        // 如果导游登录成功
-        if (guide.data && (!user.data)) {
-          this.$toast({
-            type: 'success',
-            message: '登录成功!',
-            duration: 1500
-          })
-          // 登录成功保存 localstorage
-          const userData = { user_avatar: guide.data.guide_avatar, user_name: guide.data.guide_name, user_nick: guide.data.guide_nick, user_phone: guide.data.guide_phone, user_id: guide.data.guide_id, is_guide: 'y' }
-          localStorage.setItem('userInfo', JSON.stringify(userData))
-          this.$store.commit('changeGuideId', guide.data.guide_id)
-
-          getOngoingOrder({ guide_id: guide.data.guide_id, user_id: 0 }).then(r => {
-            if (r.code === '200') {
-              this.$store.commit('changeOrderObj', r.msg[0])
-              // 设置储存
-              localStorage.setItem('orders', JSON.stringify(r.msg[0]))
-              this.$store.commit('changeReceiveFlag', true)
-              localStorage.setItem('receiveFlag', JSON.stringify({ flag: true }))
-              this.$router.push('/profile')
-            } else {
-              localStorage.removeItem('receiveFlag')
-              this.$store.commit('changeReceiveFlag', false)
-              this.$router.push('/profile')
-            }
-          })
           // 页面跳转到 profile
         }
       })
     }
+  },
+  components: {
+    LoginLogo
   },
   data () {
     return {
@@ -177,12 +131,7 @@ export default {
         passWord: {
           inactive: require('assets/login-user-lock.svg')
         }
-      },
-      hidenRegister: false,
-      actions: [
-        { name: '我想成为导游', flag: 0 },
-        { name: '我想成为用户', flag: 1 }
-      ]
+      }
     }
   },
   destroyed () {
@@ -190,9 +139,6 @@ export default {
   },
   created () {
     this.changeTabBarShow(false)
-  },
-  components: {
-    LoginLogo
   }
 }
 </script>
@@ -216,7 +162,7 @@ export default {
       line-height: 0.5rem;
       font-size: 0.26rem;
       padding: 0 0.3rem;
-      border-radius: 0.3rem;
+      border-radius: 0.1rem;
       border: 0.01rem solid var(--main-color);
       color: var(--main-color);
 
@@ -279,8 +225,8 @@ export default {
       text-align: center;
       margin-top: 1rem;
       color: #fff;
-      background-color: #FF5B8E;
-      border-radius: 0.4rem;
+      background-color: var(--main-color);
+      border-radius: 0.15rem;
     }
 
     .forget-psd_register {

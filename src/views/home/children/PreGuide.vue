@@ -2,11 +2,11 @@
         <div id="preguide">
 <!--          //头部-->
           <home-item-bar @goPreGuideMore="goMore">
-            <div slot="left">优选向导</div>
+            <div slot="left">优质社交</div>
           </home-item-bar>
 <!--          swiper展示-->
-          <div class="pre-guide_swiper">
-              <swiper-two/>
+          <div class="pre-guide_swiper" >
+              <swiper-two @singleItemClick="singleItemClick"/>
           </div>
         </div>
 </template>
@@ -23,7 +23,11 @@ export default {
   methods: {
     goMore () {
       console.log('111')
+    },
+    singleItemClick (clickEvent, swiperEvent) {
+      console.log(swiperEvent)
     }
+
   }
 }
 </script>

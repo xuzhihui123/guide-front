@@ -3,7 +3,7 @@
     <div class="home-item_bar_left">
          <span class="flag"></span>
          <span class="text"><slot name="left">优选向导</slot></span>
-         <span class="text-flag">NEW</span>
+         <span class="text-flag">推荐</span>
     </div>
     <div class="home-item_bar_right" @click="goMore">
         <span>查看全部</span>
@@ -30,7 +30,7 @@ export default {
     flex-direction: row;
     flex-wrap: nowrap;
     justify-content: space-between;
-
+    background-color: #fff;
     > div.home-item_bar_left {
       display: flex;
       flex-direction: row;
@@ -53,7 +53,7 @@ export default {
         padding: 0 0.1rem;
         line-height: 0.25rem;
         color: #fff;
-        background-color: #f5601c;
+        background-color: var(--main-color);
         margin-left: 0.1rem;
         border-radius: 0.05rem;
       }

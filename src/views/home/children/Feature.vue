@@ -11,17 +11,17 @@
 <script>
 export default {
   name: 'Feature',
-  data () {
-    return {
-
-    }
-  },
   props: {
     featureImgList: {
       type: Array,
       default () {
         return []
       }
+    }
+  },
+  data () {
+    return {
+
     }
   },
   methods: {

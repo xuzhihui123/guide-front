@@ -10,7 +10,7 @@
 
     <!-- 背景图 -->
     <div class="top_bg">
-      <img src="~assets/mybg.png" alt/>
+      <img src="https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=2492633268,262337583&fm=26&gp=0.jpg" alt/>
     </div>
 
     <!-- 个人信息展示 -->
@@ -48,6 +48,9 @@
         <div class="show-hideen">该主人很懒，什么都没留下~</div>
       </div>
     </div>
+
+    <!-- 发送消息按钮展示 -->
+   <div class="submit-message" v-if="showMessageBtn" @click="goChat">发送消息</div>
   </div>
 </template>
 
@@ -58,7 +61,7 @@ import { mapMutations } from 'vuex'
 import NavBar from 'common/navbar/NavBar'
 
 // 导入network
-import { getUserInfoById, getGuideInfoById } from 'network/profile'
+import { getUserInfoById } from 'network/profile'
 
 export default {
   name: 'ProfileDetailShow',
@@ -76,68 +79,46 @@ export default {
           profileTags: []
         }
       ],
-      defaultAvatar: require('assets/avator.png')
+      defaultAvatar: require('assets/avator.png'),
+      showMessageBtn: false
     }
   },
   methods: {
     ...mapMutations(['changeTabBarShow']),
+    goChat () {
+      this.$router.push(`/chat/${this.$route.params.id}`)
+    },
     goBack () {
       this.$router.push('/profile')
     },
     // 获取个人用户信息
     getUserByIdDetail () {
+      this.showMessageBtn = !!this.$route.params.id
       const data = JSON.parse(localStorage.getItem('userInfo') || '{}')
-      const userId = data.user_id
-      if (data.is_guide) {
-        if (userId) {
-          getGuideInfoById({
-            guideId: userId
-          }).then(r => {
-            this.profileDetailData[0].userNick = r.data.guide_nick || ''
-            this.profileDetailData[0].userSex = r.data.guide_sex || 0
-            this.profileDetailData[0].userAvatar =
-                  r.data.guide_avatar || this.defaultAvatar
-
-            if (r.profile !== null) {
-              this.profileDetailData[1].profileText = r.profile.text
-              if (r.profile.tags[0] === '') {
-                this.profileDetailData[1].profileTags = []
-              } else {
-                this.profileDetailData[1].profileTags = r.profile.tags
-              }
-            } else {
-              this.profileDetailData[1].profileText = ''
-              this.profileDetailData[1].profileTags = []
-            }
-          })
-        } else {
-          this.profileDetailData[0].userAvatar = this.defaultAvatar
-        }
-      } else {
-        if (userId) {
-          getUserInfoById({
-            userId
-          }).then(r => {
-            this.profileDetailData[0].userNick = r.data.user_nick || ''
-            this.profileDetailData[0].userSex = r.data.user_sex || 0
-            this.profileDetailData[0].userAvatar =
+      const userId = this.$route.params.id ? this.$route.params.id : data.user_id
+      if (userId) {
+        getUserInfoById({
+          userId
+        }).then(r => {
+          this.profileDetailData[0].userNick = r.data.user_nick || ''
+          this.profileDetailData[0].userSex = r.data.user_sex || 0
+          this.profileDetailData[0].userAvatar =
                   r.data.user_avatar || this.defaultAvatar
 
-            if (r.profile !== null) {
-              this.profileDetailData[1].profileText = r.profile.text
-              if (r.profile.tags[0] === '') {
-                this.profileDetailData[1].profileTags = []
-              } else {
-                this.profileDetailData[1].profileTags = r.profile.tags
-              }
-            } else {
-              this.profileDetailData[1].profileText = ''
+          if (r.profile !== null) {
+            this.profileDetailData[1].profileText = r.profile.text
+            if (r.profile.tags[0] === '') {
               this.profileDetailData[1].profileTags = []
+            } else {
+              this.profileDetailData[1].profileTags = r.profile.tags
             }
-          })
-        } else {
-          this.profileDetailData[0].userAvatar = this.defaultAvatar
-        }
+          } else {
+            this.profileDetailData[1].profileText = ''
+            this.profileDetailData[1].profileTags = []
+          }
+        })
+      } else {
+        this.profileDetailData[0].userAvatar = this.defaultAvatar
       }
     },
 
@@ -309,4 +290,19 @@ export default {
     height: 100%;
     background-color: #eee;
   }
+      .submit-message {
+      width: 89%;
+      height: 0.8rem;
+      margin: 0 auto;
+      font-size: 0.3rem;
+      line-height: 0.8rem;
+      text-align: center;
+      margin-top: 1rem;
+      color: #fff;
+      background-color: var(--main-color);
+      border-radius: 0.15rem;
+      &:active{
+        background: cornflowerblue;
+      }
+    }
 </style>

@@ -156,14 +156,6 @@ export default {
       }
     }
   },
-  created () {
-    this.changeTabBarShow(false)
-
-    this.getQuestionById()
-  },
-  destroyed () {
-    this.changeTabBarShow(true)
-  },
   watch: {
     comments (newvalue) {
       if (newvalue.length > 0) {
@@ -172,6 +164,14 @@ export default {
         this.showCommentDiv = false
       }
     }
+  },
+  created () {
+    this.changeTabBarShow(false)
+
+    this.getQuestionById()
+  },
+  destroyed () {
+    this.changeTabBarShow(true)
   }
 }
 </script>

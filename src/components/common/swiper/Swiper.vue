@@ -1,10 +1,18 @@
 <template>
-  <swiper :options="swiperOption" ref="mySwiper" v-if="viewList.length>0" >
+  <swiper
+:options="swiperOption"
+ref="mySwiper"
+v-if="viewList.length>0" >
     <!-- slides -->
-    <swiper-slide v-for="(item,index) in viewList" :key="index" :style="{'background-image':'url('+item+')'}">
+    <swiper-slide
+v-for="(item,index) in viewList"
+:key="index"
+:style="{'background-image':'url('+item+')'}">
 <!--      <img :src="item.image" alt/>-->
     </swiper-slide>
-    <div class="swiper-pagination" slot="pagination"></div>
+    <div
+class="swiper-pagination"
+slot="pagination"></div>
   </swiper>
 </template>
 
@@ -18,6 +26,15 @@ export default {
   components: {
     swiper,
     swiperSlide
+  },
+  props: {
+    // 传过来的轮播数据
+    viewList: {
+      type: Array,
+      default () {
+        return []
+      }
+    }
   },
   data () {
     return {
@@ -48,18 +65,6 @@ export default {
       }
     }
   },
-  methods: {
-
-  },
-  props: {
-    // 传过来的轮播数据
-    viewList: {
-      type: Array,
-      default () {
-        return []
-      }
-    }
-  },
   computed: {
     swiper () {
       return this.$refs.mySwiper.swiper
@@ -67,6 +72,9 @@ export default {
   },
   created () {
     vm = this
+  },
+  methods: {
+
   }
 }
 </script>

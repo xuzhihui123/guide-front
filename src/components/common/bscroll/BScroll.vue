@@ -11,23 +11,23 @@ import BScroll from 'better-scroll'
 export default {
   name: 'BScroll',
   components: {},
+  props: {
+    myprobeType: {
+      type: Number,
+      default () {
+        return 0
+      }
+    },
+    mypullUpLoad: {
+      type: Boolean,
+      default () {
+        return false
+      }
+    }
+  },
   data () {
     return {
       scroll: null
-    }
-  },
-  methods: {
-    // 刷新
-    refresh () {
-      this.scroll && this.scroll.refresh()
-    },
-    // 完成上拉加载
-    finishPullUp () {
-      this.scroll && this.scroll.finishPullUp()
-    },
-    // 滚动到莫个位置
-    scrollTo (x, y, time) {
-      this.scroll && this.scroll.scrollTo(x, y, time)
     }
   },
   mounted () {
@@ -49,18 +49,18 @@ export default {
       })
     })
   },
-  props: {
-    myprobeType: {
-      type: Number,
-      default () {
-        return 0
-      }
+  methods: {
+    // 刷新
+    refresh () {
+      this.scroll && this.scroll.refresh()
     },
-    mypullUpLoad: {
-      type: Boolean,
-      default () {
-        return false
-      }
+    // 完成上拉加载
+    finishPullUp () {
+      this.scroll && this.scroll.finishPullUp()
+    },
+    // 滚动到莫个位置
+    scrollTo (x, y, time) {
+      this.scroll && this.scroll.scrollTo(x, y, time)
     }
   }
 }

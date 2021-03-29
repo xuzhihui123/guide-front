@@ -14,3 +14,10 @@ export function getBanner () {
     url: '/getBanner'
   })
 }
+
+export function getUserList () {
+  return request({
+    method: 'get',
+    url: '/getUser'
+  })
+}

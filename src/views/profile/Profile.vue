@@ -1,14 +1,14 @@
 <template>
   <div id="profile">
     <div class="profile-top_bg">
-      <img src="~assets/mybg.png" alt />
+      <div class="t-bg"></div>
       <div class="profile-top_login_view">
         <!--        头像-->
         <img :src="singleUserInfo.user_avatar || getDefaultAvator" alt />
 
         <!--        头像的照相机图标-->
         <span class="camera-icon" v-show="changeUpLoader">
-          <img src="~assets/camera.svg" alt />
+          <img src="~assets/camera.svg"  />
         </span>
 
         <!--        这边覆盖了头像 可以input1点击-->
@@ -44,7 +44,7 @@
         </div>
       </div>
     </div>
-    <profile-list class="profilelist" :iphone-code="singleUserInfo.user_phone || ''" :is-guide="singleUserInfo"/>
+    <profile-list class="profilelist" :iphone-code="singleUserInfo.user_phone || ''"/>
 
     <div class="cropper-wrapper" v-show="cropperView">
       <vue-cropper
@@ -84,9 +84,7 @@ import { VueCropper } from 'vue-cropper'
 import {
   submitAvator,
   changeUserAvator,
-  getUserInfoById,
-  changeGuideAvator,
-  getGuideInfoById
+  getUserInfoById
 } from 'network/profile'
 
 // 导入工具commonjs
@@ -232,45 +230,6 @@ export default {
                     }
                   })
                 }
-                // 如果是导游
-                if (this.singleUserInfo.is_guide !== undefined) {
-                  changeGuideAvator({
-                    guideAvatar: r,
-                    guideId: this.singleUserInfo.user_id
-                  }).then(res => {
-                    if (res.code === '200') {
-                      this.$toast({
-                        type: 'success',
-                        message: '头像更换成功！',
-                        duration: 1500
-                      })
-                      // 隐藏cropper剪切
-                      this.cropperView = false
-                      // 清空
-                      this.imgList = []
-                      // 重新获取个人用户信息
-                      getGuideInfoById({
-                        guideId: this.singleUserInfo.user_id
-                      }).then(resData => {
-                        if (resData.status.code === '200') {
-                          // 获取新的用户信息
-                          const { guide_avatar: change_user_acator } = resData.data
-                          const userInfo = JSON.parse(
-                            localStorage.getItem('userInfo')
-                          )
-                          // 跟改本地头像地址储存
-                          userInfo.user_avatar = change_user_acator
-                          // 跟改本地头像地址储存
-                          localStorage.setItem(
-                            'userInfo',
-                            JSON.stringify(userInfo)
-                          )
-                          this.getUserInfo()
-                        }
-                      })
-                    }
-                  })
-                }
               }
             })
         })
@@ -289,8 +248,14 @@ export default {
       this.$router.push('/profiledetail')
     }
   },
-  created () {
-    this.getUserInfo()
+  computed: {
+    changeUpLoader () {
+      if (this.singleUserInfo.user_nick !== undefined) {
+        return true
+      } else {
+        return false
+      }
+    }
   },
   watch: {
     singleUserInfo (newValue) {
@@ -303,14 +268,8 @@ export default {
       }
     }
   },
-  computed: {
-    changeUpLoader () {
-      if (this.singleUserInfo.user_nick !== undefined) {
-        return true
-      } else {
-        return false
-      }
-    }
+  created () {
+    this.getUserInfo()
   }
 }
 </script>
@@ -319,9 +278,10 @@ export default {
 .profile-top_bg {
   position: relative;
 
-  img {
+  .t-bg {
     width: 100%;
     height: 3rem;
+    background: url('https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=2492633268,262337583&fm=26&gp=0.jpg');
   }
 
   .profile-top_login_view {
@@ -330,7 +290,7 @@ export default {
     width: 95%;
     position: absolute;
     height: 1.6rem;
-    border-radius: 0.2rem;
+    border-radius: 0.1rem;
     left: 50%;
     display: flex;
     align-items: center;
@@ -344,6 +304,7 @@ export default {
       width: 1.2rem;
       height: 1.2rem;
       border-radius: 50%;
+      border: 0.01rem solid #ddd
     }
 
     span.camera-icon {
@@ -365,12 +326,12 @@ export default {
     }
 
     .submit-login {
-      border: 0.02rem solid #ff699c;
+      border: 0.02rem solid var(--main-color);
       font-size: 0.24rem;
       padding: 0 0.3rem;
       height: 0.5rem;
       line-height: 0.5rem;
-      color: #ff699c;
+      color: var(--main-color);
       margin-left: 1.2rem;
       border-radius: 0.1rem;
     }

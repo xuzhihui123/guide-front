@@ -9,6 +9,10 @@ const routes = [
     component: () => import('views/home/Home')
   },
   {
+    path: '/chat/:id',
+    component: () => import('views/chat/Chat')
+  },
+  {
     path: '/find',
     component: () => import('views/find/Find')
   },
@@ -33,7 +37,7 @@ const routes = [
     component: () => import('views/login/Login')
   },
   {
-    path: '/register/:id',
+    path: '/register',
     component: () => import('views/register/Register')
   },
   {
@@ -49,7 +53,7 @@ const routes = [
     component: () => import('views/changepassword/ChangePassword')
   },
   {
-    path: '/profiledetailshow',
+    path: '/profiledetailshow/:id?',
     component: () => import('views/profiledetailshow/ProfileDetailShow')
   },
   {
@@ -122,7 +126,7 @@ router.beforeEach((to, from, next) => {
     if (data.user_name !== undefined) {
       return next()
     } else {
-      return next('/profile')
+      return
     }
   }
 
