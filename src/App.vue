@@ -4,7 +4,7 @@
     <transition enter-active-class="fadeIn animated" leave-active-class="fadeOut animated"
                 :duration="{enter:200,leave:200}" mode="out-in">
       <keep-alive
-              exclude="Chat,Login,Register,Profile,ProfileDetail,ChangePassword,ProfileDetailShow,Search,FindDetail,PostRequestion,NowFindGuide,Orders,OrderDetail,MyOrders,HistroyOrderDetails">
+              exclude="Chat,Home,Login,Register,Profile,ProfileDetail,ChangePassword,ProfileDetailShow,Search,FindDetail,PostRequestion,NowFindGuide,Orders,OrderDetail,MyOrders,HistroyOrderDetails">
         <router-view/>
       </keep-alive>
     </transition>
