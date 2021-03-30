@@ -21,5 +21,6 @@ module.exports = {
         commonjs: '@/commonjs'
       }
     }
-  }
+  },
+  publicPath: '/frontend'
 }

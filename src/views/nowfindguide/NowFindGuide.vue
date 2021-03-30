@@ -163,7 +163,7 @@ export default {
           })
         } else {
           getOnlineGuide({
-            orderDst: this.postDestinationText
+            orderDst: '连江县'
           }).then(r => {
             if (r.status.code === '200') {
               // 如果获取到了  不显示目的地列表
@@ -233,7 +233,7 @@ export default {
         selectGuideAndCreateOrder({
           guide_id,
           user_id: this.userId,
-          orderDst: this.postDestinationText,
+          orderDst: '连江县',
           orderPrice: '面议',
           detailedLocation: this.postDetailText
         }).then(r => {
@@ -261,34 +261,8 @@ export default {
           message: '已取消'
         })
       })
-    },
-
-    // 用户开启websocket
-    openWebscoketUser (id) {
-      if (typeof (WebSocket) === 'undefined') {
-        console.log('您的浏览器不支持WebSocket')
-      } else {
-        this.socket = new WebSocket(`ws://49.235.26.253:8082/websocket/${id}`)
-        // 打开事件
-        this.socket.onopen = function () {
-          console.log('Socket 已打开')
-        }
-        // 获得消息事件
-        this.socket.onmessage = function (msg) {
-          console.log(msg.data)
-          // 发现消息进入    开始处理前端触发逻辑
-        }
-        // 关闭事件
-        this.socket.onclose = function () {
-          console.log('Socket已关闭')
-        }
-        // 发生了错误事件
-        this.socket.onerror = function () {
-          alert('Socket发生了错误')
-          // 此时可以尝试刷新页面
-        }
-      }
     }
+
   },
 
   destroyed () {

@@ -43,7 +43,9 @@ export default {
   name: 'Home',
   data: function () {
     return {
-      bannerList: [],
+      bannerList: ['https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=1486864579,1815470468&fm=26&gp=0.jpg',
+        'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3099652269,1597004079&fm=26&gp=0.jpg',
+        'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=614996012,25085036&fm=26&gp=0.jpg'],
       featureImgList: [
         {
           image: require('assets/home-feature_icon1.png'),
@@ -116,7 +118,7 @@ export default {
     }
   },
   created () {
-    this.getBannerList()
+    // this.getBannerList()
   },
   methods: {
     // 获取轮播图
@@ -188,8 +190,5 @@ export default {
     height: 2.8rem;
     border-radius: 0.2rem;
     overflow: hidden;
-  }
-
-  .preguide {
   }
 </style>

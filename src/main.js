@@ -57,6 +57,8 @@ Vue.directive('focus', {
   }
 })
 
+moment.locale('zh-cn')
+
 Vue.filter('dateFormat', (str, data = 'YYYY-MM-DD') => {
   return moment(str).format(data)
 })

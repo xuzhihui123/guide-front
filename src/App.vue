@@ -67,7 +67,7 @@ export default {
       if (typeof (WebSocket) === 'undefined') {
         console.log('您的浏览器不支持WebSocket')
       } else {
-        this.socket = new WebSocket(`ws://49.235.26.253:8082/websocket/${id}`)
+        this.socket = new WebSocket(`ws://47.93.102.239:9999/xundao/websocket/${id}`)
         // 打开事件
         this.socket.onopen = function () {
           // console.log("Socket 已打开");
