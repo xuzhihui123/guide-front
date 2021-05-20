@@ -3,9 +3,9 @@
     <!-- slides -->
     <swiper-slide v-for="(item,i) in 6" :key="i">
       <div class="swiper-list_item">
-        <img src="https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2984445827,844937947&fm=26&gp=0.jpg" alt="">
+        <img :src="imgList[i]" alt="">
         <span class="name">
-          <span class="name_n">可可</span>
+          <span class="name_n">用户</span>
           <span class="name_fl">古灵精怪</span>
         </span>
         <span class="fw">快来戳我聊天吧</span>
@@ -32,6 +32,7 @@ export default {
         return []
       }
     }
+
   },
   data () {
     return {
@@ -49,7 +50,16 @@ export default {
             that.$emit('singleItemClick', e, this)
           }
         }
-      }
+      },
+      imgList:
+    [
+      'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=3899310481,3024349166&fm=11&gp=0.jpg',
+      'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1318420605,2239688149&fm=26&gp=0.jpg',
+      'https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2205781558,2542752606&fm=11&gp=0.jpg',
+      'https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=3321250724,137750188&fm=11&gp=0.jpg',
+      'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=1738835148,3026404339&fm=26&gp=0.jpg',
+      'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=2804754320,353735729&fm=26&gp=0.jpg'
+    ]
     }
   },
   computed: {
